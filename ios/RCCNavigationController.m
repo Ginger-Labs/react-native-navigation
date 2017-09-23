@@ -9,16 +9,17 @@
 #import "RCCCustomBarButtonItem.h"
 #import "UIViewController+Rotation.h"
 #import "RCTHelpers.h"
+#import "SloppySwiper.h"
 
 @implementation RCCNavigationController
 {
   BOOL _transitioning;
   NSMutableArray *_queuedViewControllers;
+  SloppySwiper *_swiper;
 }
 
 NSString const *CALLBACK_ASSOCIATED_KEY = @"RCCNavigationController.CALLBACK_ASSOCIATED_KEY";
 NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSOCIATED_ID";
-
 
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations {
   return [self supportedControllerOrientations];
@@ -52,7 +53,9 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   
   self = [super initWithRootViewController:viewController];
   if (!self) return nil;
-  self.delegate = self;
+  
+  _swiper = [[SloppySwiper alloc] initWithNavigationController:self];
+  self.delegate = _swiper;
   
   self.navigationBar.translucent = NO; // default
   
