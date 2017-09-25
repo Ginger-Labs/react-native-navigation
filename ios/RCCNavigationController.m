@@ -15,7 +15,6 @@
 @interface RCCNavigationController () <UIGestureRecognizerDelegate>
 
 @property (weak, readwrite, nonatomic) UIPanGestureRecognizer *panRecognizer;
-@property (weak, nonatomic) IBOutlet UINavigationController *navigationController;
 @property (strong, nonatomic) SSWAnimator *animator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
 /// A Boolean value that indicates whether the navigation controller is currently animating a push/pop operation.
@@ -72,7 +71,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   panRecognizer.direction = SSWPanDirectionRight;
   panRecognizer.maximumNumberOfTouches = 1;
   panRecognizer.delegate = self;
-  [_navigationController.view addGestureRecognizer:panRecognizer];
+  [self.view addGestureRecognizer:panRecognizer];
   _panRecognizer = panRecognizer;
   
   _animator = [[SSWAnimator alloc] init];
@@ -83,7 +82,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
                    props:props
                    style:navigatorStyle];
   
-
+  
   [self setRotation:props];
   
   return self;
@@ -92,7 +91,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 - (void)dealloc
 {
   [_panRecognizer removeTarget:self action:@selector(pan:)];
-  [_navigationController.view removeGestureRecognizer:_panRecognizer];
+  [self.view removeGestureRecognizer:_panRecognizer];
 }
 
 
@@ -377,7 +376,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     id icon = button[@"icon"];
     if (icon) iconImage = [RCTConvert UIImage:icon];
     NSString *__nullable component = button[@"component"];
-
+    
     UIBarButtonItem *barButtonItem;
     if (iconImage)
     {
@@ -386,7 +385,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     else if (title)
     {
       barButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(onButtonPress:)];
-
+      
       NSMutableDictionary *buttonTextAttributes = [RCTHelpers textAttributesFromDictionary:button withPrefix:@"button"];
       if (buttonTextAttributes.allKeys.count > 0) {
         [barButtonItem setTitleTextAttributes:buttonTextAttributes forState:UIControlStateNormal];
@@ -554,7 +553,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   else {
     self.panRecognizer.enabled = YES;
   }
-
+  
   dispatch_async(dispatch_get_main_queue(), ^{
     _transitioning = NO;
     if ([_queuedViewControllers count] > 0) {
@@ -566,3 +565,4 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 }
 
 @end
+
