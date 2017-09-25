@@ -9,6 +9,13 @@
 #import "RCCCustomBarButtonItem.h"
 #import "UIViewController+Rotation.h"
 #import "RCTHelpers.h"
+#import "SloppySwiper.h"
+
+@interface RCCNavigationController ()
+
+@property (strong, nonatomic) SloppySwiper *swiper;
+
+@end
 
 @implementation RCCNavigationController
 {
@@ -52,7 +59,8 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   
   self = [super initWithRootViewController:viewController];
   if (!self) return nil;
-  self.delegate = self;
+  self.swiper = [[SloppySwiper alloc] initWithNavigationController:self];
+  self.delegate = self.swiper;
   
   self.navigationBar.translucent = NO; // default
   
