@@ -38,7 +38,7 @@
 @property (nonatomic) BOOL duringAnimation;
 @end
 
-@implementation RCCSloppySwiper
+@implementation SloppySwiper
 
 #pragma mark - Lifecycle
 
