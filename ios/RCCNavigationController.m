@@ -92,14 +92,19 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   
   self.delegate = self;
   
-  SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-  panRecognizer.direction = SSWPanDirectionRight;
-  panRecognizer.maximumNumberOfTouches = 1;
-  panRecognizer.delegate = self;
-  [self.view addGestureRecognizer:panRecognizer];
-  _panRecognizer = panRecognizer;
+  NSNumber *allowSloppySwiping = props[@"allowSloppySwiping"];
+  BOOL allowSloppySwipingBool = allowSloppySwiping ? [allowSloppySwiping boolValue] : NO;
   
-  _animator = [[SSWAnimator alloc] init];
+  if (allowSloppySwipingBool) {
+    SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    panRecognizer.direction = SSWPanDirectionRight;
+    panRecognizer.maximumNumberOfTouches = 1;
+    panRecognizer.delegate = self;
+    [self.view addGestureRecognizer:panRecognizer];
+    _panRecognizer = panRecognizer;
+    
+    _animator = [[SSWAnimator alloc] init];
+  }
   
   self.navigationBar.translucent = NO; // default
   
@@ -115,8 +120,10 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (void)dealloc
 {
-  [_panRecognizer removeTarget:self action:@selector(pan:)];
-  [self.view removeGestureRecognizer:_panRecognizer];
+  if (_panRecognizer) {
+    [_panRecognizer removeTarget:self action:@selector(pan:)];
+    [self.view removeGestureRecognizer:_panRecognizer];
+  }
 }
 
 
@@ -548,7 +555,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
-  if (operation == UINavigationControllerOperationPop) {
+  if (self.panRecognizer && operation == UINavigationControllerOperationPop) {
     return self.animator;
   }
   return nil;
@@ -556,27 +563,32 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
 {
-  return self.interactionController;
+  if (self.panRecognizer) {
+    return self.interactionController;
+  }
+  return nil;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
   [viewController setNeedsStatusBarAppearanceUpdate];
   
-  if (animated) {
+  if (self.panRecognizer && animated) {
     self.duringAnimation = YES;
   }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-  self.duringAnimation = NO;
-  
-  if (navigationController.viewControllers.count <= 1) {
-    self.panRecognizer.enabled = NO;
-  }
-  else {
-    self.panRecognizer.enabled = YES;
+  if (self.panRecognizer) {
+    self.duringAnimation = NO;
+    
+    if (navigationController.viewControllers.count <= 1) {
+      self.panRecognizer.enabled = NO;
+    }
+    else {
+      self.panRecognizer.enabled = YES;
+    }
   }
   
   dispatch_async(dispatch_get_main_queue(), ^{
