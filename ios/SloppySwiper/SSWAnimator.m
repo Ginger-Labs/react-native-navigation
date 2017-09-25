@@ -84,7 +84,7 @@ UIViewAnimationOptions const SSWNavigationTransitionCurve = 7 << 16;
 
     // in the default transition the view controller below is a little dimmer than the frontmost one
     UIView *dimmingView = [[UIView alloc] initWithFrame:toViewController.view.bounds];
-    CGFloat dimAmount = [self.delegate animatorTransitionDimAmount:self];
+    CGFloat dimAmount = 0.1f;
     dimmingView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:dimAmount];
     [toViewController.view addSubview:dimmingView];
 
@@ -97,7 +97,7 @@ UIViewAnimationOptions const SSWNavigationTransitionCurve = 7 << 16;
     BOOL tabBarControllerContainsToViewController = [tabBarController.viewControllers containsObject:toViewController];
     BOOL tabBarControllerContainsNavController = [tabBarController.viewControllers containsObject:navController];
     BOOL isToViewControllerFirstInNavController = [navController.viewControllers firstObject] == toViewController;
-    BOOL shouldAnimateTabBar = [self.delegate animatorShouldAnimateTabBar:self];
+    BOOL shouldAnimateTabBar = YES;
     if (shouldAnimateTabBar && tabBar && (tabBarControllerContainsToViewController || (isToViewControllerFirstInNavController && tabBarControllerContainsNavController))) {
         [tabBar.layer removeAllAnimations];
         

@@ -32,16 +32,6 @@ FOUNDATION_EXPORT UIViewAnimationOptions const SSWNavigationTransitionCurve;
 
 @class SSWAnimator;
 
-@protocol SSWAnimatorDelegate <NSObject>
-
-@required
-- (BOOL)animatorShouldAnimateTabBar:(SSWAnimator *)animator;
-- (CGFloat)animatorTransitionDimAmount:(SSWAnimator *)animator;
-
-@end
-
 @interface SSWAnimator : NSObject <UIViewControllerAnimatedTransitioning>
-
-@property (nonatomic, weak) id<SSWAnimatorDelegate> delegate;
 
 @end
