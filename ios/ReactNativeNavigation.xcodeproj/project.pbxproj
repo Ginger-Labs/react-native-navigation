@@ -12,7 +12,6 @@
 		26714EAC1EB0E9D3009F4D52 /* RCCCustomTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26714EAB1EB0E9D3009F4D52 /* RCCCustomTitleView.m */; };
 		26AFF3F51D7EEE2400CBA211 /* RCCTitleViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 26AFF3F41D7EEE2400CBA211 /* RCCTitleViewHelper.m */; };
 		2DCD499A1F33AAC30035123A /* RCCCustomBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DCD49981F33AAC30035123A /* RCCCustomBarButtonItem.m */; };
-		7791F796A213D76264F0649B /* libPods-ReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C36BB1850F05A1EA21075D92 /* libPods-ReactNativeNavigation.a */; };
 		CC84A19E1C1A0C4E00B3A6A2 /* RCCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1941C1A0C4E00B3A6A2 /* RCCManager.m */; };
 		CC84A19F1C1A0C4E00B3A6A2 /* RCCManagerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1961C1A0C4E00B3A6A2 /* RCCManagerModule.m */; };
 		CC84A1A01C1A0C4E00B3A6A2 /* RCCNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1981C1A0C4E00B3A6A2 /* RCCNavigationController.m */; };
@@ -62,8 +61,6 @@
 		26AFF3F41D7EEE2400CBA211 /* RCCTitleViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCCTitleViewHelper.m; path = Helpers/RCCTitleViewHelper.m; sourceTree = "<group>"; };
 		2DCD49981F33AAC30035123A /* RCCCustomBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCCustomBarButtonItem.m; sourceTree = "<group>"; };
 		2DCD49991F33AAC30035123A /* RCCCustomBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCCustomBarButtonItem.h; sourceTree = "<group>"; };
-		307DC766F884BCCF9577D07B /* Pods-ReactNativeNavigation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeNavigation.release.xcconfig"; path = "Pods/Target Support Files/Pods-ReactNativeNavigation/Pods-ReactNativeNavigation.release.xcconfig"; sourceTree = "<group>"; };
-		C36BB1850F05A1EA21075D92 /* libPods-ReactNativeNavigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNativeNavigation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC84A1931C1A0C4E00B3A6A2 /* RCCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCManager.h; sourceTree = "<group>"; };
 		CC84A1941C1A0C4E00B3A6A2 /* RCCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RCCManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		CC84A1951C1A0C4E00B3A6A2 /* RCCManagerModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCManagerModule.h; sourceTree = "<group>"; };
@@ -116,7 +113,6 @@
 		D8D779961D04B7180050CFEA /* RCTHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTHelpers.h; sourceTree = "<group>"; };
 		D8D779971D04B7180050CFEA /* RCTHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTHelpers.m; sourceTree = "<group>"; };
 		D8E11C561CBD1F670018B644 /* RCCDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCDrawerController.m; sourceTree = "<group>"; };
-		FF8C8A0417B2FCB718B77535 /* Pods-ReactNativeNavigation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeNavigation.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReactNativeNavigation/Pods-ReactNativeNavigation.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,7 +120,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7791F796A213D76264F0649B /* libPods-ReactNativeNavigation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,23 +133,6 @@
 				260804DA1CE0D9D20094DBA1 /* RCCToolBar.m */,
 			);
 			path = RCCToolBar;
-			sourceTree = "<group>";
-		};
-		7AA1C067317C0ABDDA0CA2CF /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				FF8C8A0417B2FCB718B77535 /* Pods-ReactNativeNavigation.debug.xcconfig */,
-				307DC766F884BCCF9577D07B /* Pods-ReactNativeNavigation.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		7CA8268393A128EF4A0E1BF0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C36BB1850F05A1EA21075D92 /* libPods-ReactNativeNavigation.a */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D85082BB1CBCF42400FDB961 /* RCCDrawerController */ = {
@@ -249,8 +227,6 @@
 				D83514F41D29719A00D53758 /* RCCNotification.h */,
 				D83514F51D29719A00D53758 /* RCCNotification.m */,
 				D8AFADBE1BEE6F3F00A4592D /* Products */,
-				7AA1C067317C0ABDDA0CA2CF /* Pods */,
-				7CA8268393A128EF4A0E1BF0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -281,11 +257,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D8AFADC61BEE6F3F00A4592D /* Build configuration list for PBXNativeTarget "ReactNativeNavigation" */;
 			buildPhases = (
-				22D6531510AC0A657B31E673 /* [CP] Check Pods Manifest.lock */,
 				D8AFADB91BEE6F3F00A4592D /* Sources */,
 				D8AFADBA1BEE6F3F00A4592D /* Frameworks */,
 				D8AFADBB1BEE6F3F00A4592D /* CopyFiles */,
-				8B740A602F5D07668E97F19D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -326,42 +300,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		22D6531510AC0A657B31E673 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ReactNativeNavigation-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8B740A602F5D07668E97F19D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReactNativeNavigation/Pods-ReactNativeNavigation-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D8AFADB91BEE6F3F00A4592D /* Sources */ = {
@@ -485,9 +423,8 @@
 		};
 		D8AFADC71BEE6F3F00A4592D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF8C8A0417B2FCB718B77535 /* Pods-ReactNativeNavigation.debug.xcconfig */;
 			buildSettings = {
-				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = ReactNativeNavigation;
 				SKIP_INSTALL = YES;
 			};
@@ -495,9 +432,8 @@
 		};
 		D8AFADC81BEE6F3F00A4592D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 307DC766F884BCCF9577D07B /* Pods-ReactNativeNavigation.release.xcconfig */;
 			buildSettings = {
-				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = ReactNativeNavigation;
 				SKIP_INSTALL = YES;
 			};

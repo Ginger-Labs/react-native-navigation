@@ -1,3 +1,0 @@
-target 'ReactNativeNavigation' do
-  pod 'SloppySwiper', '~>0.6'
-end
