@@ -88,7 +88,6 @@ function startTabBasedApp(params) {
                     style={tab.navigationParams.navigatorStyle}
                     leftButtons={tab.navigationParams.navigatorButtons.leftButtons}
                     rightButtons={tab.navigationParams.navigatorButtons.rightButtons}
-                    allowSloppySwiping={tab.navigationParams.allowSloppySwiping}
                   />
                 </TabBarControllerIOS.Item>
               );
@@ -173,7 +172,6 @@ function startSingleScreenApp(params) {
           leftButtons={navigatorButtons.leftButtons}
           rightButtons={navigatorButtons.rightButtons}
           appStyle={params.appStyle}
-          allowSloppySwiping={params.allowSloppySwiping}
         />
       );
     }
@@ -252,8 +250,7 @@ function navigatorPush(navigator, params) {
     backButtonHidden: params.backButtonHidden,
     leftButtons: navigatorButtons.leftButtons,
     rightButtons: navigatorButtons.rightButtons,
-    timestamp: Date.now(),
-    allowSloppySwiping: params.allowSloppySwiping
+    timestamp: Date.now()
   });
 }
 
@@ -486,8 +483,7 @@ function showModal(params) {
           passProps={passProps}
           style={navigatorStyle}
           leftButtons={navigatorButtons.leftButtons}
-          rightButtons={navigatorButtons.rightButtons}
-          allowSloppySwiping={params.allowSloppySwiping}/>
+          rightButtons={navigatorButtons.rightButtons}/>
       );
     }
   });
