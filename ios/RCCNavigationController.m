@@ -56,6 +56,14 @@
 NSString const *CALLBACK_ASSOCIATED_KEY = @"RCCNavigationController.CALLBACK_ASSOCIATED_KEY";
 NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSOCIATED_ID";
 
++ (BOOL)allowSloppySwiping:(UIViewController *)controller {
+  if ([controller isKindOfClass:[RCCViewController class]]) {
+    NSNumber *allowSloppySwiping = [(RCCViewController *)controller navigatorStyle][@"allowSloppySwiping"];
+    return allowSloppySwiping ? [allowSloppySwiping boolValue] : NO; // default value of allowSloppySwiping is false
+  }
+  
+  return NO;
+}
 
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations {
   return [self supportedControllerOrientations];
@@ -92,19 +100,14 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   
   self.delegate = self;
   
-  NSNumber *allowSloppySwiping = props[@"allowSloppySwiping"];
-  BOOL allowSloppySwipingBool = allowSloppySwiping ? [allowSloppySwiping boolValue] : NO;
+  RCCDirectionalPanGestureRecognizer *panRecognizer = [[RCCDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+  panRecognizer.direction = RCCPanDirectionRight;
+  panRecognizer.maximumNumberOfTouches = 1;
+  panRecognizer.delegate = self;
+  [self.view addGestureRecognizer:panRecognizer];
+  _panRecognizer = panRecognizer;
   
-  if (allowSloppySwipingBool) {
-    RCCDirectionalPanGestureRecognizer *panRecognizer = [[RCCDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    panRecognizer.direction = RCCPanDirectionRight;
-    panRecognizer.maximumNumberOfTouches = 1;
-    panRecognizer.delegate = self;
-    [self.view addGestureRecognizer:panRecognizer];
-    _panRecognizer = panRecognizer;
-    
-    _animator = [[RCCAnimator alloc] init];
-  }
+  _animator = [[RCCAnimator alloc] init];
   
   self.navigationBar.translucent = NO; // default
   
@@ -545,7 +548,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 #pragma mark - UIGestureRecognizerDelegate
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-  if (self.viewControllers.count > 1) {
+  if (self.viewControllers.count > 1 && [RCCNavigationController allowSloppySwiping:self.topViewController]) {
     return YES;
   }
   return NO;
@@ -555,7 +558,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
-  if (self.panRecognizer && operation == UINavigationControllerOperationPop) {
+  if ([RCCNavigationController allowSloppySwiping:fromVC] && operation == UINavigationControllerOperationPop) {
     return self.animator;
   }
   return nil;
@@ -563,7 +566,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
 {
-  if (self.panRecognizer) {
+  if (animationController && [animationController isKindOfClass:[RCCAnimator class]]) {
     return self.interactionController;
   }
   return nil;
@@ -573,22 +576,20 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 {
   [viewController setNeedsStatusBarAppearanceUpdate];
   
-  if (self.panRecognizer && animated) {
+  if (animated) {
     self.duringAnimation = YES;
   }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-  if (self.panRecognizer) {
-    self.duringAnimation = NO;
-    
-    if (navigationController.viewControllers.count <= 1) {
-      self.panRecognizer.enabled = NO;
-    }
-    else {
-      self.panRecognizer.enabled = YES;
-    }
+  self.duringAnimation = NO;
+  
+  if (navigationController.viewControllers.count <= 1) {
+    self.panRecognizer.enabled = NO;
+  }
+  else {
+    self.panRecognizer.enabled = YES;
   }
   
   dispatch_async(dispatch_get_main_queue(), ^{
