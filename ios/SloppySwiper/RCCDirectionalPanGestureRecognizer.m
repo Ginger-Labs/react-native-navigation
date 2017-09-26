@@ -1,7 +1,5 @@
-//
-//  SSWDirectionalPanGestureRecognizer.m
-//
-//  Created by Arkadiusz Holko http://holko.pl on 01-06-14.
+//  Portions of this file were copied from SloppySwiper by Arkadiusz Holko.
+//  Attribution as follows:
 //
 //  The MIT License (MIT)
 //
@@ -25,14 +23,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "SSWDirectionalPanGestureRecognizer.h"
+#import "RCCDirectionalPanGestureRecognizer.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
 
-@interface SSWDirectionalPanGestureRecognizer()
+@interface RCCDirectionalPanGestureRecognizer()
 @property (nonatomic) BOOL dragging;
 @end
 
-@implementation SSWDirectionalPanGestureRecognizer
+@implementation RCCDirectionalPanGestureRecognizer
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -45,10 +43,10 @@
     // check direction only on the first move
     if (!self.dragging && !CGPointEqualToPoint(velocity, CGPointZero)) {
         NSDictionary *velocities = @{
-                                     @(SSWPanDirectionRight) : @(velocity.x),
-                                     @(SSWPanDirectionDown) : @(velocity.y),
-                                     @(SSWPanDirectionLeft) : @(-velocity.x),
-                                     @(SSWPanDirectionUp) : @(-velocity.y)
+                                     @(RCCPanDirectionRight) : @(velocity.x),
+                                     @(RCCPanDirectionDown) : @(velocity.y),
+                                     @(RCCPanDirectionLeft) : @(-velocity.x),
+                                     @(RCCPanDirectionUp) : @(-velocity.y)
                                      };
         NSArray *keysSorted = [velocities keysSortedByValueUsingSelector:@selector(compare:)];
 

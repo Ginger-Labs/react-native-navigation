@@ -34,13 +34,13 @@
 #import "RCCCustomBarButtonItem.h"
 #import "UIViewController+Rotation.h"
 #import "RCTHelpers.h"
-#import "SSWAnimator.h"
-#import "SSWDirectionalPanGestureRecognizer.h"
+#import "RCCAnimator.h"
+#import "RCCDirectionalPanGestureRecognizer.h"
 
 @interface RCCNavigationController () <UIGestureRecognizerDelegate>
 
 @property (weak, readwrite, nonatomic) UIPanGestureRecognizer *panRecognizer;
-@property (strong, nonatomic) SSWAnimator *animator;
+@property (strong, nonatomic) RCCAnimator *animator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
 /// A Boolean value that indicates whether the navigation controller is currently animating a push/pop operation.
 @property (nonatomic) BOOL duringAnimation;
@@ -96,14 +96,14 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   BOOL allowSloppySwipingBool = allowSloppySwiping ? [allowSloppySwiping boolValue] : NO;
   
   if (allowSloppySwipingBool) {
-    SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    panRecognizer.direction = SSWPanDirectionRight;
+    RCCDirectionalPanGestureRecognizer *panRecognizer = [[RCCDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    panRecognizer.direction = RCCPanDirectionRight;
     panRecognizer.maximumNumberOfTouches = 1;
     panRecognizer.delegate = self;
     [self.view addGestureRecognizer:panRecognizer];
     _panRecognizer = panRecognizer;
     
-    _animator = [[SSWAnimator alloc] init];
+    _animator = [[RCCAnimator alloc] init];
   }
   
   self.navigationBar.translucent = NO; // default

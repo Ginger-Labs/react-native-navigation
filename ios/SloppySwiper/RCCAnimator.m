@@ -1,7 +1,5 @@
-//
-//  SSWAnimator.m
-//
-//  Created by Arkadiusz Holko http://holko.pl on 29-05-14.
+//  Portions of this file were copied from SloppySwiper by Arkadiusz Holko.
+//  Attribution as follows:
 //
 //  The MIT License (MIT)
 //
@@ -25,9 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "SSWAnimator.h"
+#import "RCCAnimator.h"
 
-UIViewAnimationOptions const SSWNavigationTransitionCurve = 7 << 16;
+UIViewAnimationOptions const RCCNavigationTransitionCurve = 7 << 16;
 
 
 @implementation UIView (TransitionShadow)
@@ -52,11 +50,11 @@ UIViewAnimationOptions const SSWNavigationTransitionCurve = 7 << 16;
 @end
 
 
-@interface SSWAnimator()
+@interface RCCAnimator()
 @property (weak, nonatomic) UIViewController *toViewController;
 @end
 
-@implementation SSWAnimator
+@implementation RCCAnimator
 
 - (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext
 {
@@ -110,7 +108,7 @@ UIViewAnimationOptions const SSWNavigationTransitionCurve = 7 << 16;
     }
 
     // Uses linear curve for an interactive transition, so the view follows the finger. Otherwise, uses a navigation transition curve.
-    UIViewAnimationOptions curveOption = [transitionContext isInteractive] ? UIViewAnimationOptionCurveLinear : SSWNavigationTransitionCurve;
+    UIViewAnimationOptions curveOption = [transitionContext isInteractive] ? UIViewAnimationOptionCurveLinear : RCCNavigationTransitionCurve;
 
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 options:UIViewAnimationOptionTransitionNone | curveOption animations:^{
         toViewController.view.transform = CGAffineTransformIdentity;

@@ -1,7 +1,5 @@
-//
-//  SSWAnimator.h
-//
-//  Created by Arkadiusz Holko http://holko.pl on 29-05-14.
+//  Portions of this file were copied from SloppySwiper by Arkadiusz Holko.
+//  Attribution as follows:
 //
 //  The MIT License (MIT)
 //
@@ -28,10 +26,10 @@
 #import <UIKit/UIKit.h>
 
 // Undocumented animation curve used for the navigation controller's transition.
-FOUNDATION_EXPORT UIViewAnimationOptions const SSWNavigationTransitionCurve;
+FOUNDATION_EXPORT UIViewAnimationOptions const RCCNavigationTransitionCurve;
 
-@class SSWAnimator;
+@class RCCAnimator;
 
-@interface SSWAnimator : NSObject <UIViewControllerAnimatedTransitioning>
+@interface RCCAnimator : NSObject <UIViewControllerAnimatedTransitioning>
 
 @end

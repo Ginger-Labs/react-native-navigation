@@ -12,8 +12,8 @@
 		26714EAC1EB0E9D3009F4D52 /* RCCCustomTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26714EAB1EB0E9D3009F4D52 /* RCCCustomTitleView.m */; };
 		26AFF3F51D7EEE2400CBA211 /* RCCTitleViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 26AFF3F41D7EEE2400CBA211 /* RCCTitleViewHelper.m */; };
 		2DCD499A1F33AAC30035123A /* RCCCustomBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DCD49981F33AAC30035123A /* RCCCustomBarButtonItem.m */; };
-		C317F4D91F7971F90036E6CB /* SSWDirectionalPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C317F4D31F7971F80036E6CB /* SSWDirectionalPanGestureRecognizer.m */; };
-		C317F4DB1F7971F90036E6CB /* SSWAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = C317F4D71F7971F90036E6CB /* SSWAnimator.m */; };
+		C317F4D91F7971F90036E6CB /* RCCDirectionalPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C317F4D31F7971F80036E6CB /* RCCDirectionalPanGestureRecognizer.m */; };
+		C317F4DB1F7971F90036E6CB /* RCCAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = C317F4D71F7971F90036E6CB /* RCCAnimator.m */; };
 		CC84A19E1C1A0C4E00B3A6A2 /* RCCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1941C1A0C4E00B3A6A2 /* RCCManager.m */; };
 		CC84A19F1C1A0C4E00B3A6A2 /* RCCManagerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1961C1A0C4E00B3A6A2 /* RCCManagerModule.m */; };
 		CC84A1A01C1A0C4E00B3A6A2 /* RCCNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC84A1981C1A0C4E00B3A6A2 /* RCCNavigationController.m */; };
@@ -63,10 +63,10 @@
 		26AFF3F41D7EEE2400CBA211 /* RCCTitleViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCCTitleViewHelper.m; path = Helpers/RCCTitleViewHelper.m; sourceTree = "<group>"; };
 		2DCD49981F33AAC30035123A /* RCCCustomBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCCustomBarButtonItem.m; sourceTree = "<group>"; };
 		2DCD49991F33AAC30035123A /* RCCCustomBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCCustomBarButtonItem.h; sourceTree = "<group>"; };
-		C317F4D31F7971F80036E6CB /* SSWDirectionalPanGestureRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SSWDirectionalPanGestureRecognizer.m; sourceTree = "<group>"; };
-		C317F4D51F7971F80036E6CB /* SSWAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSWAnimator.h; sourceTree = "<group>"; };
-		C317F4D61F7971F90036E6CB /* SSWDirectionalPanGestureRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSWDirectionalPanGestureRecognizer.h; sourceTree = "<group>"; };
-		C317F4D71F7971F90036E6CB /* SSWAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SSWAnimator.m; sourceTree = "<group>"; };
+		C317F4D31F7971F80036E6CB /* RCCDirectionalPanGestureRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCCDirectionalPanGestureRecognizer.m; sourceTree = "<group>"; };
+		C317F4D51F7971F80036E6CB /* RCCAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCCAnimator.h; sourceTree = "<group>"; };
+		C317F4D61F7971F90036E6CB /* RCCDirectionalPanGestureRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCCDirectionalPanGestureRecognizer.h; sourceTree = "<group>"; };
+		C317F4D71F7971F90036E6CB /* RCCAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCCAnimator.m; sourceTree = "<group>"; };
 		CC84A1931C1A0C4E00B3A6A2 /* RCCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCManager.h; sourceTree = "<group>"; };
 		CC84A1941C1A0C4E00B3A6A2 /* RCCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = RCCManager.m; sourceTree = "<group>"; tabWidth = 2; };
 		CC84A1951C1A0C4E00B3A6A2 /* RCCManagerModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCManagerModule.h; sourceTree = "<group>"; };
@@ -144,10 +144,10 @@
 		C317F4DC1F7972F10036E6CB /* SloppySwiper */ = {
 			isa = PBXGroup;
 			children = (
-				C317F4D51F7971F80036E6CB /* SSWAnimator.h */,
-				C317F4D71F7971F90036E6CB /* SSWAnimator.m */,
-				C317F4D61F7971F90036E6CB /* SSWDirectionalPanGestureRecognizer.h */,
-				C317F4D31F7971F80036E6CB /* SSWDirectionalPanGestureRecognizer.m */,
+				C317F4D51F7971F80036E6CB /* RCCAnimator.h */,
+				C317F4D71F7971F90036E6CB /* RCCAnimator.m */,
+				C317F4D61F7971F90036E6CB /* RCCDirectionalPanGestureRecognizer.h */,
+				C317F4D31F7971F80036E6CB /* RCCDirectionalPanGestureRecognizer.m */,
 			);
 			path = SloppySwiper;
 			sourceTree = "<group>";
@@ -325,7 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D85082EA1CBCF54200FDB961 /* TheSidebarController.m in Sources */,
-				C317F4DB1F7971F90036E6CB /* SSWAnimator.m in Sources */,
+				C317F4DB1F7971F90036E6CB /* RCCAnimator.m in Sources */,
 				CC84A1A01C1A0C4E00B3A6A2 /* RCCNavigationController.m in Sources */,
 				2DCD499A1F33AAC30035123A /* RCCCustomBarButtonItem.m in Sources */,
 				D83514F61D29719A00D53758 /* RCCNotification.m in Sources */,
@@ -346,7 +346,7 @@
 				D85082E71CBCF54200FDB961 /* SidebarFlipboardAnimation.m in Sources */,
 				D85082E51CBCF54200FDB961 /* SidebarFacebookAnimation.m in Sources */,
 				CC84A1A21C1A0C4E00B3A6A2 /* RCCViewController.m in Sources */,
-				C317F4D91F7971F90036E6CB /* SSWDirectionalPanGestureRecognizer.m in Sources */,
+				C317F4D91F7971F90036E6CB /* RCCDirectionalPanGestureRecognizer.m in Sources */,
 				D85082E91CBCF54200FDB961 /* SidebarWunderlistAnimation.m in Sources */,
 				D85082E11CBCF54200FDB961 /* RCCDrawerHelper.m in Sources */,
 				261108801E6C495400BF5D98 /* UIViewController+Rotation.m in Sources */,
