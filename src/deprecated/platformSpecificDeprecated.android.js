@@ -10,7 +10,7 @@ const resolveAssetSource = require('react-native/Libraries/Image/resolveAssetSou
 
 import * as newPlatformSpecific from './../platformSpecific';
 
-function startSingleScreenApp(params) {
+async function startSingleScreenApp(params) {
   const screen = params.screen;
   if (!screen.screen) {
     console.error('startSingleScreenApp(params): screen must include a screen property');
@@ -36,7 +36,7 @@ function startSingleScreenApp(params) {
   params.overrideBackPress = screen.overrideBackPress;
   params.animateShow = convertAnimationType(params.animationType);
 
-  newPlatformSpecific.startApp(params);
+  return await newPlatformSpecific.startApp(params);
 }
 
 function getOrientation(params) {
@@ -149,7 +149,7 @@ function convertStyleParams(originalStyleObject) {
     statusBarColor: processColor(originalStyleObject.statusBarColor),
     statusBarHidden: originalStyleObject.statusBarHidden,
     statusBarTextColorScheme: originalStyleObject.statusBarTextColorScheme,
-    drawUnderStatusBar: originalStyleObject.drawUnderStatusBar || false,
+    drawUnderStatusBar: originalStyleObject.drawUnderStatusBar,
     topBarReactView: originalStyleObject.navBarCustomView,
     topBarReactViewAlignment: originalStyleObject.navBarComponentAlignment,
     topBarReactViewInitialProps: originalStyleObject.navBarCustomViewInitialProps,
@@ -237,7 +237,7 @@ function convertStyleParams(originalStyleObject) {
   if (ret.topBarReactViewInitialProps) {
     const passPropsKey = _.uniqueId('customNavBarComponent');
     PropRegistry.save(passPropsKey, ret.topBarReactViewInitialProps);
-    ret.topBarReactViewInitialProps = {passPropsKey};  
+    ret.topBarReactViewInitialProps = {passPropsKey};
   }
   return ret;
 }
@@ -257,11 +257,16 @@ function convertDrawerParamsToSideMenuParams(drawerParams) {
       result[key] = adaptNavigationParams(result[key]);
       result[key].passProps = drawer[key].passProps;
       if (drawer.disableOpenGesture) {
-        result[key].disableOpenGesture = drawer.disableOpenGesture;
+        result[key].disableOpenGesture = parseInt(drawer.disableOpenGesture);
       } else {
-        result[key].disableOpenGesture = drawer[key].disableOpenGesture;
+        let fixedWidth = drawer[key].disableOpenGesture;
+        result[key].disableOpenGesture = fixedWidth ? parseInt(fixedWidth) : null;
       }
-      
+      if (drawer.fixedWidth) {
+        result[key].fixedWidth = drawer.fixedWidth;
+      } else {
+        result[key].fixedWidth = drawer[key].fixedWidth;
+      }
     } else {
       result[key] = null;
     }
@@ -279,7 +284,7 @@ function adaptNavigationParams(screen) {
   return screen;
 }
 
-function startTabBasedApp(params) {
+async function startTabBasedApp(params) {
   if (!params.tabs) {
     console.error('startTabBasedApp(params): params.tabs is required');
     return;
@@ -317,7 +322,7 @@ function startTabBasedApp(params) {
   params.sideMenu = convertDrawerParamsToSideMenuParams(params.drawer);
   params.animateShow = convertAnimationType(params.animationType);
 
-  newPlatformSpecific.startApp(params);
+  return await newPlatformSpecific.startApp(params);
 }
 
 function addTabIcon(tab) {
@@ -772,6 +777,10 @@ async function getCurrentlyVisibleScreenId() {
   return await newPlatformSpecific.getCurrentlyVisibleScreenId();
 }
 
+async function getLaunchArgs() {
+  return await newPlatformSpecific.getLaunchArgs();
+}
+
 export default {
   startTabBasedApp,
   startSingleScreenApp,
@@ -804,5 +813,6 @@ export default {
   dismissContextualMenu,
   isAppLaunched,
   isRootLaunched,
-  getCurrentlyVisibleScreenId
+  getCurrentlyVisibleScreenId,
+  getLaunchArgs
 };
