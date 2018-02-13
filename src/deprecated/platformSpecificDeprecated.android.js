@@ -267,7 +267,6 @@ function convertDrawerParamsToSideMenuParams(drawerParams) {
       } else {
         result[key].fixedWidth = drawer[key].fixedWidth;
       }
-
     } else {
       result[key] = null;
     }
