@@ -53,6 +53,8 @@
         // Fails the gesture if the highest velocity isn't in the same direction as `direction` property.
         if ([[keysSorted lastObject] integerValue] != self.direction) {
             self.state = UIGestureRecognizerStateFailed;
+        } else {
+            [self.view endEditing:YES];
         }
 
         self.dragging = YES;
