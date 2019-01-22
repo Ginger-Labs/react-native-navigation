@@ -34,7 +34,7 @@ CGFloat const MMDrawerDefaultBounceDistance = 50.0f;
 NSTimeInterval const MMDrawerDefaultBounceAnimationDuration = 0.2f;
 CGFloat const MMDrawerDefaultSecondBounceDistancePercentage = .25f;
 
-CGFloat const MMDrawerDefaultShadowRadius = 10.0f;
+CGFloat const MMDrawerDefaultShadowRadius = 8.0f;
 CGFloat const MMDrawerDefaultShadowOpacity = 0.8;
 
 NSTimeInterval const MMDrawerMinimumAnimationDuration = 0.15f;
@@ -226,7 +226,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     [self setShadowOpacity:MMDrawerDefaultShadowOpacity];
     [self setShadowRadius:MMDrawerDefaultShadowRadius];
     [self setShadowOffset:CGSizeMake(0, -3)];
-    [self setShadowColor:[UIColor blackColor]];
+    [self setShadowColor:[UIColor colorWithRed:0.12 green:0.12 blue:0.12 alpha:1.0]];
     
     // set default bezel range for panGestureReconizer
     [self setBezelPanningCenterViewRange:MMDrawerBezelRange];
@@ -370,7 +370,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     }
     else {
         UIViewController * sideDrawerViewController = [self sideDrawerViewControllerForSide:drawerSide];
-
+        
         if(sideDrawerViewController){
             [self setAnimatingDrawer:animated];
             if (self.openSide != drawerSide) {
