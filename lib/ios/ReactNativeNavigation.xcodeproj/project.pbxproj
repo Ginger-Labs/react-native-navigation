@@ -274,9 +274,7 @@
 		7BEF0D1D1E43771B003E96B0 /* RNNLayoutNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BEF0D1B1E43771B003E96B0 /* RNNLayoutNode.m */; };
 		A7626BFD1FC2FB2C00492FB8 /* RNNTopBarOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = A7626BFC1FC2FB2C00492FB8 /* RNNTopBarOptions.m */; };
 		A7626C011FC5796200492FB8 /* RNNBottomTabsOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = A7626C001FC5796200492FB8 /* RNNBottomTabsOptions.m */; };
-		C3A172A422024C0300FA892C /* SloppySwiper.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A1729E22024C0200FA892C /* SloppySwiper.m */; };
 		C3A172A522024C0300FA892C /* SSWAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A1729F22024C0200FA892C /* SSWAnimator.h */; };
-		C3A172A622024C0300FA892C /* SloppySwiper.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A172A022024C0200FA892C /* SloppySwiper.h */; };
 		C3A172A722024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */; };
 		C3A172A822024C0300FA892C /* SSWAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A172A222024C0300FA892C /* SSWAnimator.m */; };
 		C3A172A922024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A172A322024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m */; };
@@ -609,9 +607,7 @@
 		A7626BFE1FC2FB6700492FB8 /* RNNTopBarOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNTopBarOptions.h; sourceTree = "<group>"; };
 		A7626BFF1FC578AB00492FB8 /* RNNBottomTabsOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNBottomTabsOptions.h; sourceTree = "<group>"; };
 		A7626C001FC5796200492FB8 /* RNNBottomTabsOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNBottomTabsOptions.m; sourceTree = "<group>"; };
-		C3A1729E22024C0200FA892C /* SloppySwiper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SloppySwiper.m; sourceTree = "<group>"; };
 		C3A1729F22024C0200FA892C /* SSWAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSWAnimator.h; sourceTree = "<group>"; };
-		C3A172A022024C0200FA892C /* SloppySwiper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SloppySwiper.h; sourceTree = "<group>"; };
 		C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSWDirectionalPanGestureRecognizer.h; sourceTree = "<group>"; };
 		C3A172A222024C0300FA892C /* SSWAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSWAnimator.m; sourceTree = "<group>"; };
 		C3A172A322024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSWDirectionalPanGestureRecognizer.m; sourceTree = "<group>"; };
@@ -1090,8 +1086,6 @@
 		C3A1729D22024BD900FA892C /* SloppySwiper */ = {
 			isa = PBXGroup;
 			children = (
-				C3A172A022024C0200FA892C /* SloppySwiper.h */,
-				C3A1729E22024C0200FA892C /* SloppySwiper.m */,
 				C3A1729F22024C0200FA892C /* SSWAnimator.h */,
 				C3A172A222024C0300FA892C /* SSWAnimator.m */,
 				C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */,
@@ -1234,7 +1228,6 @@
 				50415CBA20553B8E00BB682E /* RNNScreenTransition.h in Headers */,
 				5039558B2174829400B0A663 /* IntNumberParser.h in Headers */,
 				263905C21E4C6F440023D7D3 /* SidebarAnimation.h in Headers */,
-				C3A172A622024C0300FA892C /* SloppySwiper.h in Headers */,
 				5038A3BD216E1490009280BC /* RNNTabBarItemCreator.h in Headers */,
 				E8E518361F83B94A000467AC /* RNNViewLocation.h in Headers */,
 				505EDD34214E7B7B0071C7DE /* RNNLeafProtocol.h in Headers */,
@@ -1453,7 +1446,6 @@
 				50C4A497206BDDBB00DB292E /* RNNSubtitleOptions.m in Sources */,
 				263905B41E4C6F440023D7D3 /* MMDrawerVisualState.m in Sources */,
 				5012240B21735959000F5F98 /* RNNSideMenuPresenter.m in Sources */,
-				C3A172A422024C0300FA892C /* SloppySwiper.m in Sources */,
 				502CB46F20CD1DDA0019B2FE /* RNNBackButtonOptions.m in Sources */,
 				7365071221E4B16F004E020F /* RCTConvert+UIBarButtonSystemItem.m in Sources */,
 				5012241B21736678000F5F98 /* Image.m in Sources */,
