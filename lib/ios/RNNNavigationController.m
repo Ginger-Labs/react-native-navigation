@@ -12,7 +12,7 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 @property (nonatomic, strong) NSMutableDictionary* originalTopBarImages;
 
 @property (weak, readwrite, nonatomic) UIPanGestureRecognizer *panRecognizer;
-@property (strong, nonatomic) SSWAnimator *animator;
+@property (strong, nonatomic) SSWAnimator *sswAnimator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
 /// A Boolean value that indicates whether the navigation controller is currently animating a push/pop operation.
 @property (nonatomic) BOOL duringAnimation;
@@ -24,15 +24,6 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 - (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo childViewControllers:(NSArray *)childViewControllers options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions presenter:(RNNNavigationControllerPresenter *)presenter {
 	self = [super init];
 	
-	SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-	panRecognizer.direction = SSWPanDirectionRight;
-	panRecognizer.maximumNumberOfTouches = 1;
-	panRecognizer.delegate = self;
-	[self.view addGestureRecognizer:panRecognizer];
-	_panRecognizer = panRecognizer;
-	
-	_animator = [[SSWAnimator alloc] init];
-
 	self.presenter = presenter;
 	[self.presenter bindViewController:self];
 	
@@ -43,11 +34,23 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 	
 	[self setViewControllers:childViewControllers];
 	
+	_sswAnimator = [[SSWAnimator alloc] init];
+	
+	SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+	panRecognizer.direction = SSWPanDirectionRight;
+	panRecognizer.maximumNumberOfTouches = 1;
+	panRecognizer.delegate = self;
+	
+	_panRecognizer = panRecognizer;
+	
+	[self.view addGestureRecognizer:self.panRecognizer];
+	
+	self.delegate = self;
+	
 	return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
 	if (_panRecognizer) {
 		[_panRecognizer removeTarget:self action:@selector(pan:)];
 		[self.view removeGestureRecognizer:_panRecognizer];
@@ -185,12 +188,14 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 	UIView *view = self.view;
 	if (recognizer.state == UIGestureRecognizerStateBegan) {
 		if (self.viewControllers.count > 1 && !self.duringAnimation) {
+			self.delegate = self;
 			self.interactionController = [[UIPercentDrivenInteractiveTransition alloc] init];
 			self.interactionController.completionCurve = UIViewAnimationCurveEaseOut;
 			
 			[self popViewControllerAnimated:YES];
 		}
 	} else if (recognizer.state == UIGestureRecognizerStateChanged) {
+		self.topViewController.view.userInteractionEnabled = NO;
 		CGPoint translation = [recognizer translationInView:view];
 		// Cumulative translation.x can be less than zero because user can pan slightly to the right and then back to the left.
 		CGFloat d = translation.x > 0 ? translation.x / CGRectGetWidth(view.bounds) : 0;
@@ -204,13 +209,8 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 			self.duringAnimation = NO;
 		}
 		self.interactionController = nil;
+		self.topViewController.view.userInteractionEnabled = YES;
 	}
-}
-
-#pragma mark - UIGestureRecognizerDelegate
-
--(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-	return [self.options.popGesture getWithDefaultValue:YES];
 }
 
 #pragma mark - UINavigationControllerDelegate
@@ -218,7 +218,7 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
 	if (operation == UINavigationControllerOperationPop) {
-		return self.animator;
+		return self.sswAnimator;
 	}
 	return nil;
 }
@@ -245,6 +245,21 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 	else {
 		self.panRecognizer.enabled = YES;
 	}
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)pan shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)other
+{
+	return YES;
+}
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+	return YES;
+}
+
+-(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+	return [self.options.popGesture getWithDefaultValue:YES];
 }
 
 @end

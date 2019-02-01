@@ -7,11 +7,9 @@ typedef void (^RNNAnimationBlock)(void);
 
 - (void)push:(UIViewController *)newTop onTop:(UIViewController *)onTopViewController animated:(BOOL)animated animationDelegate:(id)animationDelegate completion:(RNNTransitionCompletionBlock)completion rejection:(RCTPromiseRejectBlock)rejection {
 	UINavigationController *nvc = onTopViewController.navigationController;
-
+	
 	if (animationDelegate) {
 		nvc.delegate = animationDelegate;
-	} else {
-		nvc.delegate = nil;
 	}
 	
 	[self performAnimationBlock:^{

@@ -1499,10 +1499,11 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         if([self isPointContainedWithinCenterViewContentRect:point]){
             possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
         }
-        if([self isPointContainedWithinLeftBezelRect:point] &&
-           self.leftDrawerViewController){
-            possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
-        }
+		// TODO: we can uncomment this. just has a weird effect right now.
+//        if([self isPointContainedWithinLeftBezelRect:point] &&
+//           self.leftDrawerViewController){
+//            possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
+//        }
         if([self isPointContainedWithinRightBezelRect:point] &&
            self.rightDrawerViewController){
             possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
