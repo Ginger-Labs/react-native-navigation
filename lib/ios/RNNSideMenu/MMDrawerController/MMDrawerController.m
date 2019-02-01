@@ -1493,12 +1493,12 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     CGPoint point = [touch locationInView:self.childControllerContainerView];
     MMOpenDrawerGestureMode possibleOpenGestureModes = MMOpenDrawerGestureModeNone;
     if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]){
-        if([self isPointContainedWithinNavigationRect:point]){
-            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningNavigationBar;
-        }
-        if([self isPointContainedWithinCenterViewContentRect:point]){
-            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
-        }
+//        if([self isPointContainedWithinNavigationRect:point]){
+//            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningNavigationBar;
+//        }
+//        if([self isPointContainedWithinCenterViewContentRect:point]){
+//            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
+//        }
 		// TODO: we can uncomment this. just has a weird effect right now.
 //        if([self isPointContainedWithinLeftBezelRect:point] &&
 //           self.leftDrawerViewController){
