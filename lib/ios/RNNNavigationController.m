@@ -249,11 +249,6 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 
 #pragma mark - UIGestureRecognizerDelegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)pan shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)other
-{
-	return YES;
-}
-
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
 	return YES;
 }
