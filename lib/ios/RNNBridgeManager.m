@@ -44,10 +44,6 @@
 													 name:RCTJavaScriptDidLoadNotification
 												   object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(onJavaScriptWillLoad)
-													 name:RCTJavaScriptWillStartLoadingNotification
-												   object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(onBridgeWillReload)
 													 name:RCTBridgeWillReloadNotification
 												   object:nil];
@@ -87,10 +83,6 @@
 
 # pragma mark - JavaScript & Bridge Notifications
 
-- (void)onJavaScriptWillLoad {
-	[_store clean];
-}
-
 - (void)onJavaScriptLoaded {
 	[_store setReadyToReceiveCommands:true];
 	[[_bridge moduleForClass:[RNNEventEmitter class]] sendOnAppLaunched];
@@ -98,6 +90,7 @@
 
 - (void)onBridgeWillReload {
 	UIApplication.sharedApplication.delegate.window.rootViewController =  nil;
+	[_store clean];
 }
 
 @end
