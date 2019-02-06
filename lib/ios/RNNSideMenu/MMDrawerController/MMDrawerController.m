@@ -21,6 +21,7 @@
 
 #import "MMDrawerController.h"
 #import "UIViewController+MMDrawerController.h"
+#import "SSWDirectionalPanGestureRecognizer.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -1434,6 +1435,17 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
 }
 
 #pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+	return [otherGestureRecognizer isKindOfClass:[SSWDirectionalPanGestureRecognizer class]]; // makes the open drawer gesture recognizer fail if sloppy swipe pan recognizer is present
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(nonnull UIGestureRecognizer *)otherGestureRecognizer
+{
+	return (self.openDrawerGestureModeMask & MMOpenDrawerGestureModeBezelPanningCenterView) > 0; // ensures that when open drawer gesture mode is 'bezel', the open drawer gesture recognizer will have precedence over others unless specifically required to fail
+}
+
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
     
     if(self.openSide == MMDrawerSideNone){
@@ -1493,17 +1505,16 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     CGPoint point = [touch locationInView:self.childControllerContainerView];
     MMOpenDrawerGestureMode possibleOpenGestureModes = MMOpenDrawerGestureModeNone;
     if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]){
-//        if([self isPointContainedWithinNavigationRect:point]){
-//            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningNavigationBar;
-//        }
-//        if([self isPointContainedWithinCenterViewContentRect:point]){
-//            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
-//        }
-		// TODO: we can uncomment this. just has a weird effect right now.
-//        if([self isPointContainedWithinLeftBezelRect:point] &&
-//           self.leftDrawerViewController){
-//            possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
-//        }
+        if([self isPointContainedWithinNavigationRect:point]){
+            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningNavigationBar;
+        }
+        if([self isPointContainedWithinCenterViewContentRect:point]){
+            possibleOpenGestureModes |= MMOpenDrawerGestureModePanningCenterView;
+        }
+        if([self isPointContainedWithinLeftBezelRect:point] &&
+           self.leftDrawerViewController){
+            possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
+        }
         if([self isPointContainedWithinRightBezelRect:point] &&
            self.rightDrawerViewController){
             possibleOpenGestureModes |= MMOpenDrawerGestureModeBezelPanningCenterView;
