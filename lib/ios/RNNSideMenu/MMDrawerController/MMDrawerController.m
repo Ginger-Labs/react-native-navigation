@@ -45,10 +45,10 @@ CGFloat const MMDrawerBezelRange = 20.0f;
 CGFloat const MMDrawerPanVelocityXAnimationThreshold = 200.0f;
 
 /** The amount of overshoot that is panned linearly. The remaining percentage nonlinearly asymptotes to the max percentage. */
-CGFloat const MMDrawerOvershootLinearRangePercentage = 0.75f;
+CGFloat const MMDrawerOvershootLinearRangePercentage = 0.0f;
 
 /** The percent of the possible overshoot width to use as the actual overshoot percentage. */
-CGFloat const MMDrawerOvershootPercentage = 0.1f;
+CGFloat const MMDrawerOvershootPercentage = 0.0f;
 
 typedef void (^MMDrawerGestureStartedBlock)(MMDrawerController * drawerController, UIGestureRecognizer * gesture);
 typedef BOOL (^MMDrawerGestureShouldRecognizeTouchBlock)(MMDrawerController * drawerController, UIGestureRecognizer * gesture, UITouch * touch);
@@ -1435,6 +1435,11 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
 }
 
 #pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)panGestureRecognizer {
+    CGPoint velocity = [panGestureRecognizer velocityInView:self.view];
+    return fabs(velocity.x) > fabs(velocity.y);
+}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
