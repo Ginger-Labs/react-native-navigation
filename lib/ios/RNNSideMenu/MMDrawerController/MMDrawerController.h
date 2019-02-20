@@ -373,34 +373,6 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
 -(void)setCenterViewController:(UIViewController *)newCenterViewController withFullCloseAnimation:(BOOL)fullCloseAnimated completion:(void(^)(BOOL finished))completion;
 
 ///---------------------------------------
-/// @name Animating the Width of a Drawer
-///---------------------------------------
-
-/**
- Sets the maximum width of the left drawer view controller.
- 
- If the drawer is open, and `animated` is YES, it will animate the drawer frame as well as adjust the center view controller. If the drawer is not open, this change will take place immediately.
- 
- @param width The new width of left drawer view controller. This must be greater than zero.
- @param animated Determines whether the drawer should be adjusted with an animation.
- @param completion The block called when the animation is finished.
- 
- */
--(void)setMaximumLeftDrawerWidth:(CGFloat)width animated:(BOOL)animated completion:(void(^)(BOOL finished))completion;
-
-/**
- Sets the maximum width of the right drawer view controller.
- 
- If the drawer is open, and `animated` is YES, it will animate the drawer frame as well as adjust the center view controller. If the drawer is not open, this change will take place immediately.
- 
- @param width The new width of right drawer view controller. This must be greater than zero.
- @param animated Determines whether the drawer should be adjusted with an animation.
- @param completion The block called when the animation is finished.
- 
- */
--(void)setMaximumRightDrawerWidth:(CGFloat)width animated:(BOOL)animated completion:(void(^)(BOOL finished))completion;
-
-///---------------------------------------
 /// @name Previewing a Drawer
 ///---------------------------------------
 
