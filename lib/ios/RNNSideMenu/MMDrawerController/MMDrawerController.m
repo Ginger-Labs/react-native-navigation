@@ -25,7 +25,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-CGFloat const MMDrawerExitAreaWidth = 48.0f;
 CGFloat const MMDrawerDefaultAnimationVelocity = 840.0f;
 
 NSTimeInterval const MMDrawerDefaultFullAnimationDelay = 0.10f;
@@ -871,15 +870,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         
         UIView *view = _leftDrawerViewController.view;
         
-        CGFloat width = MIN(view.frame.size.width, 414.f) - MMDrawerExitAreaWidth; // 414 being the pt width of the largest iPhone to date. assume anything larger is an iPad and needs a side panel of limited width.
-        
-        [self setMaximumDrawerWidth:width forSide:MMDrawerSideLeft];
-          
-        CALayer *TopBorder = [CALayer layer];
-        CGFloat borderWidth = (1.0 / [UIScreen mainScreen].scale);
-        TopBorder.frame = CGRectMake(width - borderWidth, 0.0f, borderWidth, view.frame.size.height);
-        TopBorder.backgroundColor = [UIColor colorWithRed:0.86 green:0.87 blue:0.87 alpha:1.0].CGColor;
-        [view.layer addSublayer:TopBorder];
+        [self setMaximumDrawerWidth:view.frame.size.width forSide:MMDrawerSideLeft];
     }
     else if(drawerSide == MMDrawerSideRight){
         _rightDrawerViewController = viewController;

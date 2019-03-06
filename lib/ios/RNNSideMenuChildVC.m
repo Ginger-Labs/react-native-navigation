@@ -64,6 +64,11 @@
 	CGRect frame = self.child.view.frame;
 	frame.size.width = width;
 	self.child.view.frame = frame;
+	CALayer *TopBorder = [CALayer layer];
+	CGFloat borderWidth = (1.0 / [UIScreen mainScreen].scale);
+	TopBorder.frame = CGRectMake(frame.size.width - borderWidth, 0.0f, borderWidth, self.child.view.frame.size.height);
+	TopBorder.backgroundColor = [UIColor colorWithRed:0.86 green:0.87 blue:0.87 alpha:1.0].CGColor;
+	[self.child.view.layer addSublayer:TopBorder];
 }
 
 - (UIViewController *)getCurrentChild {
