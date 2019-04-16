@@ -20,7 +20,12 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 
 @implementation RNNNavigationController
 
-- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo childViewControllers:(NSArray *)childViewControllers options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions presenter:(RNNNavigationControllerPresenter *)presenter {
+- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo
+						   creator:(id<RNNRootViewCreator>)creator
+						   options:(RNNNavigationOptions *)options
+					defaultOptions:(RNNNavigationOptions *)defaultOptions
+						 presenter:(RNNNavigationControllerPresenter *)presenter
+					  eventEmitter:(RNNEventEmitter *)eventEmitter {
 	self = [super init];
 	
 	self.presenter = presenter;
@@ -30,8 +35,6 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 	self.options = options;
 	
 	self.layoutInfo = layoutInfo;
-	
-	[self setViewControllers:childViewControllers];
 	
 	_sswAnimator = [[SSWAnimator alloc] init];
 	
@@ -64,7 +67,7 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 
 - (void)onChildWillAppear {
 	[_presenter applyOptions:self.resolveOptions];
-	[((UIViewController<RNNParentProtocol> *)self.parentViewController) onChildWillAppear];
+	[((UIViewController *)self.parentViewController) onChildWillAppear];
 }
 
 - (RNNNavigationOptions *)resolveOptions {
@@ -78,6 +81,7 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 
 - (void)overrideOptions:(RNNNavigationOptions *)options {
 	[self.options overrideOptions:options];
+}
 
 - (UIViewController *)getCurrentChild {
 	return self.topViewController;
