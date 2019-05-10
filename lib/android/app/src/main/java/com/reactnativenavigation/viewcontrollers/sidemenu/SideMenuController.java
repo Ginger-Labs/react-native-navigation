@@ -27,19 +27,21 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class SideMenuController extends ParentController<DrawerLayout> implements DrawerLayout.DrawerListener {
 
-	private ViewController center;
-	private ViewController left;
-	private ViewController right;
+    private ViewController center;
+    private ViewController left;
+    private ViewController right;
     private SideMenuPresenter presenter;
+    private Presenter defaultPresenter; //keep a reference to this for default options.
 
-    public SideMenuController(Activity activity, ChildControllersRegistry childRegistry, String id, Options initialOptions, SideMenuPresenter sideMenuOptionsPresenter, Presenter presenter) {
-		super(activity, childRegistry, id, presenter, initialOptions);
+    public SideMenuController(Activity activity, ChildControllersRegistry childRegistry, String id, Options initialOptions, SideMenuPresenter sideMenuOptionsPresenter, Presenter defaultPresenter) {
+        super(activity, childRegistry, id, defaultPresenter, initialOptions);
         this.presenter = sideMenuOptionsPresenter;
+        this.defaultPresenter = defaultPresenter;
     }
 
     @Override
     protected ViewController getCurrentChild() {
-	    if (getView().isDrawerOpen(Gravity.LEFT)) {
+        if (getView().isDrawerOpen(Gravity.LEFT)) {
             return left;
         } else if (getView().isDrawerOpen(Gravity.RIGHT)) {
             return right;
@@ -48,13 +50,13 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
     }
 
     @NonNull
-	@Override
-	protected DrawerLayout createView() {
+    @Override
+    protected DrawerLayout createView() {
         DrawerLayout sideMenu = new SideMenu(getActivity());
         presenter.bindView(sideMenu);
         sideMenu.addDrawerListener(this);
         return sideMenu;
-	}
+    }
 
     @Override
     public void sendOnNavigationButtonPressed(String buttonId) {
@@ -62,14 +64,14 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
     }
 
     @NonNull
-	@Override
-	public Collection<ViewController> getChildControllers() {
-		ArrayList<ViewController> children = new ArrayList<>();
-		if (center != null) children.add(center);
-		if (left != null) children.add(left);
-		if (right != null) children.add(right);
-		return children;
-	}
+    @Override
+    public Collection<ViewController> getChildControllers() {
+        ArrayList<ViewController> children = new ArrayList<>();
+        if (center != null) children.add(center);
+        if (left != null) children.add(left);
+        if (right != null) children.add(right);
+        return children;
+    }
 
     @Override
     public void applyChildOptions(Options options, Component child) {
@@ -128,15 +130,21 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
     }
 
     public void setCenterController(ViewController centerController) {
-		this.center = centerController;
-		View childView = centerController.getView();
-		getView().addView(childView);
-	}
+        this.center = centerController;
+        View childView = centerController.getView();
+        getView().addView(childView);
+    }
 
     public void setLeftController(ViewController controller) {
         this.left = controller;
         int height = this.getHeight(options.sideMenuRootOptions.left);
+        if (height == -1) {
+            height = this.getHeight(defaultPresenter.getDefaultOptions().sideMenuRootOptions.left);
+        }
         int width = this.getWidth(options.sideMenuRootOptions.left);
+        if (width == -1) {
+            width = this.getWidth(defaultPresenter.getDefaultOptions().sideMenuRootOptions.left);
+        }
         getView().addView(controller.getView(), new LayoutParams(width, height, Gravity.LEFT));
     }
 
@@ -163,15 +171,15 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
         return height;
     }
 
-    private ViewController getMatchingView (View drawerView) {
+    private ViewController getMatchingView(View drawerView) {
         return this.viewIsLeft(drawerView) ? left : right;
     }
 
-    private boolean viewIsLeft (View drawerView) {
+    private boolean viewIsLeft(View drawerView) {
         return (left != null && drawerView.equals(left.getView()));
     }
 
-    private Options getOptionsWithVisability ( boolean isLeft, boolean visible ) {
+    private Options getOptionsWithVisability(boolean isLeft, boolean visible) {
         Options options = new Options();
         if (isLeft) {
             options.sideMenuRootOptions.left.visible = new Bool(visible);
