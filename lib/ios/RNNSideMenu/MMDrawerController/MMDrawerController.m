@@ -21,7 +21,6 @@
 
 #import "MMDrawerController.h"
 #import "UIViewController+MMDrawerController.h"
-#import "SSWDirectionalPanGestureRecognizer.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -1434,22 +1433,25 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        CGPoint velocity = [(UIPanGestureRecognizer *)gestureRecognizer velocityInView:self.view];
-        return fabs(velocity.x) > fabs(velocity.y);
-    }
-    
-    return true;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return [otherGestureRecognizer isKindOfClass:[SSWDirectionalPanGestureRecognizer class]]; // makes the open drawer gesture recognizer fail if sloppy swipe pan recognizer is present
+	if (self.centerViewController.childViewControllers[0].childViewControllers.count > 1) {
+		return false;
+	}
+	
+	if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		CGPoint velocity = [(UIPanGestureRecognizer *)gestureRecognizer velocityInView:self.view];
+		return fabs(velocity.x) > fabs(velocity.y) && (self.openSide != MMDrawerSideNone || velocity.x > 0); // only start on right-swipe when drawer is closed
+	}
+	
+	return true;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(nonnull UIGestureRecognizer *)otherGestureRecognizer
 {
-    return (self.openDrawerGestureModeMask & MMOpenDrawerGestureModeBezelPanningCenterView) > 0; // ensures that when open drawer gesture mode is 'bezel', the open drawer gesture recognizer will have precedence over others unless specifically required to fail
+	return NO;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	return NO;
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{

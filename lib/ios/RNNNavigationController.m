@@ -244,7 +244,14 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 }
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-	return [self.options.popGesture getWithDefaultValue:YES];
+	return self.navigationController.viewControllers.count > 1;
+}
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(nonnull UIGestureRecognizer *)otherGestureRecognizer {
+	if ([otherGestureRecognizer isKindOfClass:NSClassFromString(@"RCTTouchHandler")] && [otherGestureRecognizer respondsToSelector:@selector(cancel)]) {
+		[(id)otherGestureRecognizer cancel];
+	}
+	return NO;
 }
 
 @end
