@@ -97,7 +97,6 @@
 
 - (void)onBridgeWillReload {
 	UIApplication.sharedApplication.delegate.window.rootViewController =  nil;
-	[_store clean];
 }
 
 @end
