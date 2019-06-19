@@ -9,8 +9,6 @@ const TopTabOptionsScreen = require('./TopTabOptionsScreen');
 const CustomTextButton = require('./CustomTextButton');
 const TopBarBackground = require('./TopBarBackground');
 const KeyboardScreen = require('./KeyboardScreen');
-const ContextScreen = require('./ContextScreen');
-const { ContextProvider } = require('../context');
 const Screens = require('./Screens');
 
 function registerScreens() {
@@ -19,6 +17,7 @@ function registerScreens() {
   Navigation.registerComponent(Screens.Stack, () => require('./StackScreen'));
   Navigation.registerComponent(Screens.Pushed, () => require('./PushedScreen'));
   Navigation.registerComponent(Screens.Modal, () => require('./ModalScreen'))
+  Navigation.registerComponent(Screens.SetRoot, () => require('./SetRootScreen'))
   Navigation.registerComponent(Screens.Navigation, () => require('./NavigationScreen'));
   Navigation.registerComponent(Screens.FirstBottomTabsScreen, () => require('./FirstBottomTabScreen'));
   Navigation.registerComponent(Screens.SecondBottomTabsScreen, () => require('./SecondBottomTabScreen'));
@@ -40,14 +39,18 @@ function registerScreens() {
   Navigation.registerComponent(Screens.Search, () => require('./SearchScreen'));
   Navigation.registerComponent(Screens.ExternalComponent, () => require('./ExternalComponentScreen'));
 
-  Navigation.registerComponent(`navigation.playground.CustomTransitionDestination`, () => CustomTransitionDestination);
-  Navigation.registerComponent(`navigation.playground.CustomTransitionOrigin`, () => CustomTransitionOrigin);
-  Navigation.registerComponent(`navigation.playground.ScrollViewScreen`, () => ScrollViewScreen);
-  Navigation.registerComponent('navigation.playground.ContextScreen', () => (props) =>
+  const { ContextProvider } = require('../context');
+  const ContextScreen = require('./ContextScreen');
+  Navigation.registerComponent(Screens.ContextScreen, () => (props) =>
     <ContextProvider>
       <ContextScreen {...props} />
     </ContextProvider>,
     () => ContextScreen);
+
+  Navigation.registerComponent(`navigation.playground.CustomTransitionDestination`, () => CustomTransitionDestination);
+  Navigation.registerComponent(`navigation.playground.CustomTransitionOrigin`, () => CustomTransitionOrigin);
+  Navigation.registerComponent(`navigation.playground.ScrollViewScreen`, () => ScrollViewScreen);
+
   Navigation.registerComponent('navigation.playground.CustomDialog', () => CustomDialog);
   Navigation.registerComponent('navigation.playground.CustomDialogWithScroll', () => CustomDialogWithScroll);
   Navigation.registerComponent('navigation.playground.TopTabScreen', () => TopTabScreen);

@@ -20,67 +20,22 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 
 @implementation RNNNavigationController
 
-- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo
-						   creator:(id<RNNRootViewCreator>)creator
-						   options:(RNNNavigationOptions *)options
-					defaultOptions:(RNNNavigationOptions *)defaultOptions
-						 presenter:(RNNNavigationControllerPresenter *)presenter
-					  eventEmitter:(RNNEventEmitter *)eventEmitter {
-	self = [super init];
-	
-	self.presenter = presenter;
-	[self.presenter bindViewController:self];
-	
-	self.defaultOptions = defaultOptions;
-	self.options = options;
-	
-	self.layoutInfo = layoutInfo;
-	
-	_sswAnimator = [[SSWAnimator alloc] init];
-	
-	SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-	panRecognizer.direction = SSWPanDirectionRight;
-	panRecognizer.maximumNumberOfTouches = 1;
-	panRecognizer.delegate = self;
-	
-	_panRecognizer = panRecognizer;
-	
-	[self.view addGestureRecognizer:self.panRecognizer];
-	
-	self.delegate = self;
-	
-	return self;
-}
-
-- (void)dealloc {
-	if (_panRecognizer) {
-		[_panRecognizer removeTarget:self action:@selector(pan:)];
-		[self.view removeGestureRecognizer:_panRecognizer];
-	}
-}
-
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-	if (parent) {
-		[_presenter applyOptionsOnWillMoveToParentViewController:self.resolveOptions];
-	}
-}
-
-- (void)onChildWillAppear {
-	[_presenter applyOptions:self.resolveOptions];
-	[((UIViewController *)self.parentViewController) onChildWillAppear];
-}
-
-- (RNNNavigationOptions *)resolveOptions {
-	return [(RNNNavigationOptions *)[self.getCurrentChild.resolveOptions.copy mergeOptions:self.options] withDefault:self.defaultOptions];
-}
-
-- (void)mergeOptions:(RNNNavigationOptions *)options {
-	[_presenter mergeOptions:options currentOptions:self.options defaultOptions:self.defaultOptions];
-	[((UIViewController<RNNLayoutProtocol> *)self.parentViewController) mergeOptions:options];
-}
-
-- (void)overrideOptions:(RNNNavigationOptions *)options {
-	[self.options overrideOptions:options];
+- (void)viewDidLayoutSubviews {
+	[super viewDidLayoutSubviews];
+	[self.presenter applyOptionsOnViewDidLayoutSubviews:self.resolveOptions];
+    
+    self.sswAnimator = [[SSWAnimator alloc] init];
+    
+    SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    panRecognizer.direction = SSWPanDirectionRight;
+    panRecognizer.maximumNumberOfTouches = 1;
+    panRecognizer.delegate = self;
+    
+    self.panRecognizer = panRecognizer;
+    
+    [self.view addGestureRecognizer:self.panRecognizer];
+    
+    self.delegate = self;
 }
 
 - (UIViewController *)getCurrentChild {
