@@ -9,8 +9,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIImplementation;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewManager;
-import com.facebook.react.uimanager.common.MeasureSpecProvider;
-import com.facebook.react.uimanager.common.SizeMonitoringFrameLayout;
 import com.facebook.react.uimanager.events.EventDispatcher;
 
 import java.util.List;
@@ -61,10 +59,4 @@ public class SyncUiImplementation extends UIImplementation {
         }
     }
 
-    @Override
-    public <T extends SizeMonitoringFrameLayout & MeasureSpecProvider> void registerRootView(T rootView, int tag, ThemedReactContext context) {
-        synchronized (lock) {
-            super.registerRootView(rootView, tag, context);
-        }
-    }
 }
