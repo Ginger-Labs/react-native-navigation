@@ -32,6 +32,8 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
     private ViewController right;
     private SideMenuPresenter presenter;
     private Presenter defaultPresenter; //keep a reference to this for default options.
+    private float prevLeftSlideOffset = 0;
+    private float prevRightSlideOffset = 0;
 
     public SideMenuController(Activity activity, ChildControllersRegistry childRegistry, String id, Options initialOptions, SideMenuPresenter sideMenuOptionsPresenter, Presenter defaultPresenter) {
         super(activity, childRegistry, id, defaultPresenter, initialOptions);
@@ -113,15 +115,30 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
     @Override
     public void onDrawerOpened(@NonNull View drawerView) {
         ViewController view = this.getMatchingView(drawerView);
-        view.mergeOptions(this.getOptionsWithVisability(this.viewIsLeft(drawerView), true));
-        view.onViewAppeared();
+        view.mergeOptions(this.getOptionsWithVisibility(this.viewIsLeft(drawerView), true));
     }
 
     @Override
     public void onDrawerClosed(@NonNull View drawerView) {
         ViewController view = this.getMatchingView(drawerView);
-        view.mergeOptions(this.getOptionsWithVisability(this.viewIsLeft(drawerView), false));
-        view.onViewDisappear();
+        view.mergeOptions(this.getOptionsWithVisibility(this.viewIsLeft(drawerView), false));
+    }
+
+    @Override
+    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+        int gravity = getSideMenuGravity(drawerView);
+        if (gravity == Gravity.LEFT) {
+            dispatchSideMenuVisibilityEvents(left, prevLeftSlideOffset, slideOffset);
+            prevLeftSlideOffset = slideOffset;
+        } else if (gravity == Gravity.RIGHT) {
+            dispatchSideMenuVisibilityEvents(right, prevRightSlideOffset, slideOffset);
+            prevRightSlideOffset = slideOffset;
+        }
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+
     }
 
     @Override
@@ -150,8 +167,8 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
 
     public void setRightController(ViewController controller) {
         this.right = controller;
-        int height = this.getHeight(options.sideMenuRootOptions.right);
-        int width = this.getWidth(options.sideMenuRootOptions.right);
+        int height = getHeight(options.sideMenuRootOptions.right);
+        int width = getWidth(options.sideMenuRootOptions.right);
         getView().addView(controller.getView(), new LayoutParams(width, height, Gravity.RIGHT));
     }
 
@@ -179,7 +196,11 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
         return (left != null && drawerView.equals(left.getView()));
     }
 
-    private Options getOptionsWithVisability(boolean isLeft, boolean visible) {
+    private int getSideMenuGravity(View drawerView) {
+        return ((LayoutParams) drawerView.getLayoutParams()).gravity;
+    }
+
+    private Options getOptionsWithVisibility(boolean isLeft, boolean visible ) {
         Options options = new Options();
         if (isLeft) {
             options.sideMenuRootOptions.left.visible = new Bool(visible);
@@ -189,13 +210,11 @@ public class SideMenuController extends ParentController<DrawerLayout> implement
         return options;
     }
 
-    @Override
-    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
-    }
-
-    @Override
-    public void onDrawerStateChanged(int newState) {
-
+    private void dispatchSideMenuVisibilityEvents(ViewController drawer, float prevOffset, float offset) {
+        if (prevOffset == 0 && offset> 0) {
+            drawer.onViewAppeared();
+        } else if (prevOffset > 0 && offset == 0) {
+            drawer.onViewDisappear();
+        }
     }
 }
