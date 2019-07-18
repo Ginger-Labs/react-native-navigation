@@ -181,4 +181,8 @@ public class Presenter {
             }
         }
     }
+
+    public Options getDefaultOptions() {
+        return defaultOptions;
+    }
 }
