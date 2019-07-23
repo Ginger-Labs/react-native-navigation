@@ -37,8 +37,6 @@ public class BottomTabPresenter {
         this.bottomTabFinder = new BottomTabFinder(tabs);
         this.imageLoader = imageLoader;
         this.defaultOptions = defaultOptions;
-        defaultSelectedTextColor = defaultOptions.bottomTabOptions.selectedIconColor.get(ContextCompat.getColor(context, com.aurelhubert.ahbottomnavigation.R.color.colorBottomNavigationAccent));
-        defaultTextColor = defaultOptions.bottomTabOptions.iconColor.get(ContextCompat.getColor(context, com.aurelhubert.ahbottomnavigation.R.color.colorBottomNavigationInactive));
         defaultDotIndicatorSize = dpToPx(context, 6);
     }
 
