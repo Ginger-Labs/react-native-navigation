@@ -24,7 +24,7 @@
 - (void)applyOptions:(RNNNavigationOptions *)options {
 	[super applyOptions:options];
 	
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	
 	self.interactivePopGestureDelegate = [InteractivePopGestureDelegate new];
 	self.interactivePopGestureDelegate.navigationController = navigationController;
@@ -46,14 +46,10 @@
 	[navigationController rnn_setNavigationBarLargeTitleFontFamily:[options.topBar.largeTitle.fontFamily getWithDefaultValue:nil] fontSize:[options.topBar.largeTitle.fontSize getWithDefaultValue:nil] color:[options.topBar.largeTitle.color getWithDefaultValue:nil]];
 	[navigationController rnn_setNavigationBarFontFamily:[options.topBar.title.fontFamily getWithDefaultValue:nil] fontSize:[options.topBar.title.fontSize getWithDefaultValue:nil] color:[options.topBar.title.color getWithDefaultValue:nil]];
 	[navigationController rnn_setBackButtonColor:[options.topBar.backButton.color getWithDefaultValue:nil]];
-	[navigationController rnn_setBackButtonIcon:[options.topBar.backButton.icon getWithDefaultValue:nil] withColor:[options.topBar.backButton.color getWithDefaultValue:nil] title:[options.topBar.backButton.showTitle getWithDefaultValue:YES] ? [options.topBar.backButton.title getWithDefaultValue:nil] : @""];
 }
 
 - (void)applyOptionsOnWillMoveToParentViewController:(RNNNavigationOptions *)options {
 	[super applyOptionsOnWillMoveToParentViewController:options];
-	
-	RNNNavigationController* navigationController = self.bindedViewController;
-	[navigationController rnn_setBackButtonIcon:[options.topBar.backButton.icon getWithDefaultValue:nil] withColor:[options.topBar.backButton.color getWithDefaultValue:nil] title:[options.topBar.backButton.showTitle getWithDefaultValue:YES] ? [options.topBar.backButton.title getWithDefaultValue:nil] : @""];
 }
 
 - (void)applyOptionsOnViewDidLayoutSubviews:(RNNNavigationOptions *)options {
@@ -63,7 +59,7 @@
 }
 
 - (void)applyOptionsBeforePopping:(RNNNavigationOptions *)options {
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	[navigationController setTopBarBackgroundColor:[options.topBar.background.color getWithDefaultValue:nil]];
 	[navigationController rnn_setNavigationBarFontFamily:[options.topBar.title.fontFamily getWithDefaultValue:nil] fontSize:[options.topBar.title.fontSize getWithDefaultValue:@(17)] color:[options.topBar.title.color getWithDefaultValue:[UIColor blackColor]]];
 	[navigationController rnn_setNavigationBarLargeTitleVisible:[options.topBar.largeTitle.visible getWithDefaultValue:NO]];
@@ -72,7 +68,7 @@
 - (void)mergeOptions:(RNNNavigationOptions *)newOptions currentOptions:(RNNNavigationOptions *)currentOptions defaultOptions:(RNNNavigationOptions *)defaultOptions {
 	[super mergeOptions:newOptions currentOptions:currentOptions defaultOptions:defaultOptions];
 	
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	
 	if (newOptions.popGesture.hasValue) {
 		[navigationController rnn_setInteractivePopGestureEnabled:newOptions.popGesture.get];
@@ -120,11 +116,6 @@
 	
 	if (newOptions.topBar.largeTitle.visible.hasValue) {
 		[navigationController rnn_setNavigationBarLargeTitleVisible:newOptions.topBar.largeTitle.visible.get];
-	}
-	
-	if (newOptions.topBar.backButton.icon.hasValue || newOptions.topBar.backButton.showTitle.hasValue || newOptions.topBar.backButton.color.hasValue || newOptions.topBar.backButton.title.hasValue) {
-		[navigationController rnn_setBackButtonIcon:[newOptions.topBar.backButton.icon getWithDefaultValue:nil] withColor:[newOptions.topBar.backButton.color getWithDefaultValue:nil] title:[newOptions.topBar.backButton.showTitle getWithDefaultValue:YES] ? [newOptions.topBar.backButton.title getWithDefaultValue:nil] : @""];
-		
 	}
 	
 	if (newOptions.topBar.backButton.color.hasValue) {
@@ -177,7 +168,7 @@
 }
 
 - (void)setCustomNavigationBarView:(RNNNavigationOptions *)options perform:(RNNReactViewReadyCompletionBlock)readyBlock {
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	if (![options.topBar.component.waitForRender getWithDefaultValue:NO] && readyBlock) {
 		readyBlock();
 		readyBlock = nil;
@@ -203,7 +194,7 @@
 }
 
 - (void)setCustomNavigationComponentBackground:(RNNNavigationOptions *)options perform:(RNNReactViewReadyCompletionBlock)readyBlock {
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	if (![options.topBar.background.component.waitForRender getWithDefaultValue:NO] && readyBlock) {
 		readyBlock();
 		readyBlock = nil;
@@ -223,7 +214,7 @@
 }
 
 - (void)presentBackgroundComponent {
-	RNNNavigationController* navigationController = self.bindedViewController;
+	RNNNavigationController* navigationController = self.boundViewController;
 	if (_customTopBarBackground) {
 		[_customTopBarBackground removeFromSuperview];
 	}
@@ -234,7 +225,7 @@
 }
 
 - (void)dealloc {
-	[_componentRegistry removeComponent:self.bindedComponentId];
+	[_componentRegistry removeComponent:self.boundComponentId];
 }
 
 @end

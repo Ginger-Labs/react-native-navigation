@@ -10,6 +10,13 @@ const {
 } = require('../testIDs');
 
 class SideMenuLeftScreen extends React.Component {
+  static options() {
+    return {
+      layout: {
+        orientation: ['portrait', 'landscape']
+      }
+    };
+  }
   render() {
     return (
       <Root componentId={this.props.componentId} style={{ marginTop: this.props.marginTop || 0 }}>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntRange;
+import android.support.annotation.IntRange;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -51,11 +52,6 @@ public class BottomTabs extends AHBottomNavigation {
 
     public void setBadge(int bottomTabIndex, String badge) {
         setNotification(badge, bottomTabIndex);
-    }
-
-    public void setBadgeColor(@ColorInt Integer color) {
-        if (color == null) return;
-        setNotificationBackgroundColor(color);
     }
 
     @Override
