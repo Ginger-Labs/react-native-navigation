@@ -1,10 +1,12 @@
 module.exports = {
   ExternalComponent: 'ExternalComponent',
+  ContextScreen: 'ContextScreen',
   Pushed: 'Pushed',
   Layouts: 'Layouts',
   Options: 'Options',
   Stack: 'Stack',
   Modal: 'Modal',
+  SetRoot: 'SetRoot',
   Overlay: 'Overlay',
   OverlayAlert: 'OverlayAlert',
   ScrollViewOverlay: 'ScrollViewOverlay',

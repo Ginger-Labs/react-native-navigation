@@ -9,28 +9,11 @@
 
 @implementation RNNSideMenuChildVC
 
-- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo childViewControllers:(NSArray *)childViewControllers options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions presenter:(RNNViewControllerPresenter *)presenter type:(RNNSideMenuChildType)type {
-	self = [self initWithLayoutInfo:layoutInfo childViewControllers:childViewControllers options:options defaultOptions:defaultOptions presenter:presenter];
-	
+
+- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo creator:(id<RNNRootViewCreator>)creator options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions presenter:(RNNBasePresenter *)presenter eventEmitter:(RNNEventEmitter *)eventEmitter childViewController:(UIViewController *)childViewController type:(RNNSideMenuChildType)type {
+	self = [super initWithLayoutInfo:layoutInfo creator:creator options:options defaultOptions:defaultOptions presenter:presenter eventEmitter:eventEmitter childViewControllers:nil];
 	self.type = type;
-
-	return self;
-}
-
-- (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo childViewControllers:(NSArray *)childViewControllers options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions presenter:(RNNViewControllerPresenter *)presenter {
-	self = [super init];
-	
-	self.child = childViewControllers[0];
-	
-	self.presenter = presenter;
-	[self.presenter bindViewController:self];
-	
-	self.defaultOptions = defaultOptions;
-	self.options = options;
-	self.layoutInfo = layoutInfo;
-	
-	[self bindChildViewController:self.child];
-
+	self.child = childViewController;
 	return self;
 }
 
@@ -38,8 +21,8 @@
 	[self.getCurrentChild renderTreeAndWait:wait perform:readyBlock];
 }
 
-- (void)bindChildViewController:(UIViewController<RNNLayoutProtocol>*)child {
-	self.child = child;
+- (void)setChild:(UIViewController<RNNLayoutProtocol> *)child {
+	_child = child;
 	[self addChildViewController:self.child];
 	[self.child.view setFrame:self.view.bounds];
 	[self.view addSubview:self.child.view];
@@ -50,11 +33,6 @@
 	CGRect frame = self.child.view.frame;
 	frame.size.width = width;
 	self.child.view.frame = frame;
-	CALayer *TopBorder = [CALayer layer];
-	CGFloat borderWidth = (1.0 / [UIScreen mainScreen].scale);
-	TopBorder.frame = CGRectMake(frame.size.width - borderWidth, 0.0f, borderWidth, self.child.view.frame.size.height);
-	TopBorder.backgroundColor = [UIColor colorWithRed:0.86 green:0.87 blue:0.87 alpha:1.0].CGColor;
-	[self.child.view.layer addSublayer:TopBorder];
 }
 
 - (UIViewController *)getCurrentChild {
@@ -63,6 +41,10 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return self.child.preferredStatusBarStyle;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+	return self.child.supportedInterfaceOrientations;
 }
 
 @end
