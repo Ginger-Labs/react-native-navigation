@@ -15,6 +15,8 @@ import com.reactnativenavigation.views.BottomTabs;
 
 import java.util.List;
 
+import static com.reactnativenavigation.utils.ViewUtils.getHeight;
+
 public class BottomTabsPresenter {
     private final BottomTabFinder bottomTabFinder;
     private final List<ViewController> tabs;
@@ -97,12 +99,24 @@ public class BottomTabsPresenter {
         }
     }
 
-    private void applyDrawBehind(@IntRange(from = 0) int tabIndex) {
-        tabs.get(tabIndex).applyBottomInset();
+    private void applyDrawBehind(BottomTabsOptions options, @IntRange(from = 0) int tabIndex) {
+        ViewGroup tab = tabs.get(tabIndex).getView();
+        MarginLayoutParams lp = (MarginLayoutParams) tab.getLayoutParams();
+        if (options.drawBehind.isTrue()) {
+            lp.bottomMargin = 0;
+        } else if (options.visible.isTrueOrUndefined()) {
+            lp.bottomMargin = getHeight(bottomTabs);
+        }
     }
 
-    private void mergeDrawBehind(int tabIndex) {
-        tabs.get(tabIndex).applyBottomInset();
+    private void mergeDrawBehind(BottomTabsOptions options, int tabIndex) {
+        ViewGroup tab = tabs.get(tabIndex).getView();
+        MarginLayoutParams lp = (MarginLayoutParams) tab.getLayoutParams();
+        if (options.drawBehind.isTrue()) {
+            lp.bottomMargin = 0;
+        } else if (options.visible.isTrue() && options.drawBehind.isFalse()) {
+            lp.bottomMargin = getHeight(bottomTabs);
+        }
     }
 
     private void applyBottomTabsOptions(BottomTabsOptions options, AnimationsOptions animationsOptions) {

@@ -28,9 +28,10 @@ import java.util.Collection;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
+import static com.reactnativenavigation.react.Constants.BOTTOM_TABS_HEIGHT;
 import static com.reactnativenavigation.utils.CollectionUtils.*;
-import static com.reactnativenavigation.utils.ObjectUtils.perform;
+import static com.reactnativenavigation.utils.UiUtils.dpToPx;
 
 public class BottomTabsController extends ParentController<BottomTabsLayout> implements AHBottomNavigation.OnTabSelectedListener, TabSelector {
 
@@ -70,9 +71,8 @@ public class BottomTabsController extends ParentController<BottomTabsLayout> imp
         presenter.bindView(bottomTabs, this);
         tabPresenter.bindView(bottomTabs);
         bottomTabs.setOnTabSelectedListener(this);
-
-        CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        lp.gravity = Gravity.BOTTOM;
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(MATCH_PARENT, dpToPx(getActivity(), BOTTOM_TABS_HEIGHT));
+		lp.addRule(ALIGN_PARENT_BOTTOM);
 		root.addView(bottomTabs, lp);
 
         bottomTabs.addItems(createTabs());
