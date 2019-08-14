@@ -1198,7 +1198,8 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 -(void)finishAnimationForPanGestureWithXVelocity:(CGFloat)xVelocity completion:(void(^)(BOOL finished))completion{
     CGFloat currentOriginX = CGRectGetMinX(self.centerContainerView.frame);
     
-    CGFloat animationVelocity = MAX(ABS(xVelocity),self.panVelocityXAnimationThreshold*2);
+	CGFloat minVelocity = self.openSide == MMDrawerSideLeft ? self.animationVelocityLeft : self.animationVelocityRight;
+	CGFloat animationVelocity = MAX(ABS(xVelocity), minVelocity);
     
     if(self.openSide == MMDrawerSideLeft) {
         CGFloat midPoint = self.maximumLeftDrawerWidth / 2.0;
