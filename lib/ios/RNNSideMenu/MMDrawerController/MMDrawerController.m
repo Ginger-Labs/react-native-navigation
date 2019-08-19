@@ -90,17 +90,35 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 
 @implementation MMDrawerCenterContainerView
 
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOverlayViewForStatusBarStyle:) name:@"GLStatusBarStyleDidChangeNotification" object:nil];
+	}
+	return self;
+}
+
+-(void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
++(UIColor*)overlayColorForStatusBarStyle:(UIStatusBarStyle)style {
+	return style == UIStatusBarStyleDefault ? [UIColor colorWithWhite:1.0 alpha:0.9] : [UIColor colorWithWhite:0.0 alpha:0.8];
+}
 
 -(UIView *)overlayView {
     if (!_overlayView) {
         _overlayView = [[UIView alloc] initWithFrame:self.bounds];
         _overlayView.userInteractionEnabled = NO;
-        _overlayView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.18];
+        _overlayView.backgroundColor = [MMDrawerCenterContainerView overlayColorForStatusBarStyle:[[UIApplication sharedApplication] statusBarStyle]];
         _overlayView.alpha = 0.0;
     }
     return _overlayView;
 }
 
+-(void)updateOverlayViewForStatusBarStyle:(NSNotification *)n {
+	self.overlayView.backgroundColor = [MMDrawerCenterContainerView overlayColorForStatusBarStyle:[[n object] integerValue]];
+}
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     UIView *hitView = [super hitTest:point withEvent:event];
