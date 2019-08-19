@@ -95,6 +95,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     if (!_overlayView) {
         _overlayView = [[UIView alloc] initWithFrame:self.bounds];
         _overlayView.userInteractionEnabled = NO;
+        _overlayView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.18];
         _overlayView.alpha = 0.0;
     }
     return _overlayView;
