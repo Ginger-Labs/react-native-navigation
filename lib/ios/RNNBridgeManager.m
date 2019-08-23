@@ -46,10 +46,6 @@
 													 name:RCTJavaScriptDidLoadNotification
 												   object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(onJavaScriptWillLoad)
-													 name:RCTJavaScriptWillStartLoadingNotification
-												   object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(onBridgeWillReload)
 													 name:RCTBridgeWillReloadNotification
 												   object:nil];

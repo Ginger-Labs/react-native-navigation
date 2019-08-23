@@ -278,6 +278,10 @@
 		A7626C011FC5796200492FB8 /* RNNBottomTabsOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = A7626C001FC5796200492FB8 /* RNNBottomTabsOptions.m */; };
 		C2A57A1C21E815F80066711C /* InteractivePopGestureDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = C2A57A1A21E815F80066711C /* InteractivePopGestureDelegate.h */; };
 		C2A57A1D21E815F80066711C /* InteractivePopGestureDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2A57A1B21E815F80066711C /* InteractivePopGestureDelegate.m */; };
+		C3A172A522024C0300FA892C /* SSWAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A1729F22024C0200FA892C /* SSWAnimator.h */; };
+		C3A172A722024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */; };
+		C3A172A822024C0300FA892C /* SSWAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A172A222024C0300FA892C /* SSWAnimator.m */; };
+		C3A172A922024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A172A322024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m */; };
 		E33AC20020B5BA0B0090DB8A /* RNNSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E33AC1FF20B5BA0B0090DB8A /* RNNSplitViewController.m */; };
 		E33AC20820B5C4F90090DB8A /* RNNSplitViewOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = E33AC20720B5C4F90090DB8A /* RNNSplitViewOptions.m */; };
 		E3458D3E20BD9CE40023149B /* RNNPreviewOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = E3458D3D20BD9CE40023149B /* RNNPreviewOptions.m */; };
@@ -633,6 +637,10 @@
 		A7626C001FC5796200492FB8 /* RNNBottomTabsOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNBottomTabsOptions.m; sourceTree = "<group>"; };
 		C2A57A1A21E815F80066711C /* InteractivePopGestureDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InteractivePopGestureDelegate.h; sourceTree = "<group>"; };
 		C2A57A1B21E815F80066711C /* InteractivePopGestureDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InteractivePopGestureDelegate.m; sourceTree = "<group>"; };
+		C3A1729F22024C0200FA892C /* SSWAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSWAnimator.h; sourceTree = "<group>"; };
+		C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSWDirectionalPanGestureRecognizer.h; sourceTree = "<group>"; };
+		C3A172A222024C0300FA892C /* SSWAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSWAnimator.m; sourceTree = "<group>"; };
+		C3A172A322024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSWDirectionalPanGestureRecognizer.m; sourceTree = "<group>"; };
 		D8AFADBD1BEE6F3F00A4592D /* libReactNativeNavigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeNavigation.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E33AC1FF20B5BA0B0090DB8A /* RNNSplitViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNSplitViewController.m; sourceTree = "<group>"; };
 		E33AC20120B5BA550090DB8A /* RNNSplitViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNSplitViewController.h; sourceTree = "<group>"; };
@@ -1099,6 +1107,17 @@
 			name = Bridge;
 			sourceTree = "<group>";
 		};
+		C3A1729D22024BD900FA892C /* SloppySwiper */ = {
+			isa = PBXGroup;
+			children = (
+				C3A1729F22024C0200FA892C /* SSWAnimator.h */,
+				C3A172A222024C0300FA892C /* SSWAnimator.m */,
+				C3A172A122024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h */,
+				C3A172A322024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m */,
+			);
+			name = SloppySwiper;
+			sourceTree = "<group>";
+		};
 		D8AFADB41BEE6F3F00A4592D = {
 			isa = PBXGroup;
 			children = (
@@ -1112,6 +1131,7 @@
 				5047E4F32267568700908DD3 /* RNNExternalComponentStore.m */,
 				7B4928061E70415400555040 /* RNNCommandsHandler.h */,
 				7B4928071E70415400555040 /* RNNCommandsHandler.m */,
+				C3A1729D22024BD900FA892C /* SloppySwiper */,
 				502CB43920CBCA140019B2FE /* RNNBridgeManagerDelegate.h */,
 				5038A3AF216DF41B009280BC /* UIViewController+RNNOptions.h */,
 				5038A3B0216DF41B009280BC /* UIViewController+RNNOptions.m */,
@@ -1251,6 +1271,7 @@
 				5012241621736667000F5F98 /* Color.h in Headers */,
 				7365071121E4B16F004E020F /* RCTConvert+UIBarButtonSystemItem.h in Headers */,
 				5064495D20DC62B90026709C /* RNNSideMenuSideOptions.h in Headers */,
+				C3A172A722024C0300FA892C /* SSWDirectionalPanGestureRecognizer.h in Headers */,
 				50F5DFC11F407A8C001A00BC /* RNNTabBarController.h in Headers */,
 				50395587217480C900B0A663 /* IntNumber.h in Headers */,
 				5012242A217372B3000F5F98 /* ImageParser.h in Headers */,
@@ -1303,6 +1324,7 @@
 				5049593E216F5D73006D2B81 /* BoolParser.h in Headers */,
 				E5F6C3A522DB4D0F0093C2CE /* UIViewController+Utils.h in Headers */,
 				50C4A496206BDDBB00DB292E /* RNNSubtitleOptions.h in Headers */,
+				C3A172A522024C0300FA892C /* SSWAnimator.h in Headers */,
 				5039559B2174867000B0A663 /* DoubleParser.h in Headers */,
 				E8AEDB3C1F55A1C2000F5A6A /* RNNElementView.h in Headers */,
 				E8E518321F83B3E0000467AC /* RNNUtils.h in Headers */,
@@ -1520,6 +1542,7 @@
 				651E1F8D21FD642100DFEA19 /* RNNSplitViewControllerPresenter.m in Sources */,
 				501E0218213E7EA3003365C5 /* RNNReactView.m in Sources */,
 				50BE951220B5A787004F5DF5 /* RNNStatusBarOptions.m in Sources */,
+				C3A172A922024C0300FA892C /* SSWDirectionalPanGestureRecognizer.m in Sources */,
 				50495953216F62BD006D2B81 /* NullNumber.m in Sources */,
 				5012242721737278000F5F98 /* NullImage.m in Sources */,
 				7B1126A01E2D263F00F9B03B /* RNNEventEmitter.m in Sources */,
@@ -1527,6 +1550,7 @@
 				5050465521F8F4490035497A /* RNNReactComponentRegistry.m in Sources */,
 				50570BEB2063E09B006A1B5C /* RNNTitleViewHelper.m in Sources */,
 				263905E71E4CAC950023D7D3 /* RNNSideMenuChildVC.m in Sources */,
+				C3A172A822024C0300FA892C /* SSWAnimator.m in Sources */,
 				50495957216F6B3D006D2B81 /* DictionaryParser.m in Sources */,
 				390AD478200F499D00A8250D /* RNNSwizzles.m in Sources */,
 				50E02BD921A6EE0F00A43942 /* SideMenuOpenMode.m in Sources */,
