@@ -183,7 +183,7 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 #pragma mark - UIGestureRecognizerDelegate
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-	return YES;
+	return UIMenuController.sharedMenuController.isMenuVisible == NO;
 }
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
