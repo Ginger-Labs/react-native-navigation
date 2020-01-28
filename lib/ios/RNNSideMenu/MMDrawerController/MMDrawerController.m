@@ -103,7 +103,14 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 }
 
 +(UIColor*)overlayColorForStatusBarStyle:(UIStatusBarStyle)style {
-	return style == UIStatusBarStyleDefault ? [UIColor colorWithWhite:1.0 alpha:0.9] : [UIColor colorWithWhite:0.0 alpha:0.8];
+    if (@available(iOS 13.0, *)) {
+        if (style == UIStatusBarStyleLightContent) {
+            return [UIColor colorWithWhite:0.0 alpha:0.8];
+        }
+        return [UIColor colorWithWhite:1.0 alpha:0.9];
+    } else {
+        return style == UIStatusBarStyleDefault ? [UIColor colorWithWhite:1.0 alpha:0.9] : [UIColor colorWithWhite:0.0 alpha:0.8];
+    }
 }
 
 -(UIView *)overlayView {
