@@ -1,56 +1,66 @@
 package com.reactnativenavigation.viewcontrollers.stack;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.reactnativenavigation.anim.NavigationAnimator;
+import com.reactnativenavigation.parse.NestedAnimationsOptions;
 import com.reactnativenavigation.parse.Options;
 import com.reactnativenavigation.presentation.Presenter;
 import com.reactnativenavigation.presentation.StackPresenter;
 import com.reactnativenavigation.react.Constants;
+import com.reactnativenavigation.react.events.EventEmitter;
 import com.reactnativenavigation.utils.CommandListener;
 import com.reactnativenavigation.utils.CommandListenerAdapter;
+import com.reactnativenavigation.utils.CompatUtils;
 import com.reactnativenavigation.viewcontrollers.ChildControllersRegistry;
 import com.reactnativenavigation.viewcontrollers.IdStack;
 import com.reactnativenavigation.viewcontrollers.ParentController;
 import com.reactnativenavigation.viewcontrollers.ViewController;
 import com.reactnativenavigation.viewcontrollers.topbar.TopBarController;
 import com.reactnativenavigation.views.Component;
-import com.reactnativenavigation.views.ReactComponent;
+import com.reactnativenavigation.views.Fab;
+import com.reactnativenavigation.views.FabMenu;
 import com.reactnativenavigation.views.StackLayout;
+import com.reactnativenavigation.views.stack.StackBehaviour;
 import com.reactnativenavigation.views.topbar.TopBar;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import androidx.annotation.VisibleForTesting;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.viewpager.widget.ViewPager;
+
 import static com.reactnativenavigation.utils.CollectionUtils.*;
+import static com.reactnativenavigation.utils.CoordinatorLayoutUtils.matchParentWithBehaviour;
+import static com.reactnativenavigation.utils.CoordinatorLayoutUtils.updateBottomMargin;
+import static com.reactnativenavigation.utils.ObjectUtils.perform;
 
 public class StackController extends ParentController<StackLayout> {
 
     private IdStack<ViewController> stack = new IdStack<>();
     private final NavigationAnimator animator;
+    private final EventEmitter eventEmitter;
     private TopBarController topBarController;
     private BackButtonHelper backButtonHelper;
     private final StackPresenter presenter;
 
-    public StackController(Activity activity, List<ViewController> children, ChildControllersRegistry childRegistry, TopBarController topBarController, NavigationAnimator animator, String id, Options initialOptions, BackButtonHelper backButtonHelper, StackPresenter stackPresenter, Presenter presenter) {
+    public StackController(Activity activity, List<ViewController> children, ChildControllersRegistry childRegistry, EventEmitter eventEmitter, TopBarController topBarController, NavigationAnimator animator, String id, Options initialOptions, BackButtonHelper backButtonHelper, StackPresenter stackPresenter, Presenter presenter) {
         super(activity, childRegistry, id, presenter, initialOptions);
+        this.eventEmitter = eventEmitter;
         this.topBarController = topBarController;
         this.animator = animator;
         this.backButtonHelper = backButtonHelper;
         this.presenter = stackPresenter;
         stackPresenter.setButtonOnClickListener(this::onNavigationButtonPressed);
         for (ViewController child : children) {
-            stack.push(child.getId(), child);
             child.setParentController(this);
+            stack.push(child.getId(), child);
             if (size() > 1) backButtonHelper.addToPushedChild(child);
         }
     }
@@ -61,7 +71,7 @@ public class StackController extends ParentController<StackLayout> {
         if (getCurrentChild().isDestroyed()) return false;
         ViewGroup currentChild = getCurrentChild().getView();
         if (currentChild instanceof Component) {
-            return super.isRendered() && presenter.isRendered((Component) currentChild);
+            return super.isRendered() && presenter.isRendered(currentChild);
         }
         return super.isRendered();
     }
@@ -80,25 +90,23 @@ public class StackController extends ParentController<StackLayout> {
     @Override
     public void onAttachToParent() {
         if (!isEmpty() && !getCurrentChild().isDestroyed() && !isViewShown()) {
-            presenter.applyChildOptions(resolveCurrentOptions(), (Component) getCurrentChild().getView());
+            presenter.applyChildOptions(resolveCurrentOptions(), this, getCurrentChild());
         }
     }
 
     @Override
     public void mergeOptions(Options options) {
-        presenter.mergeOptions(options, (Component) getCurrentChild().getView());
+        if (isViewShown()) presenter.mergeOptions(options, this, getCurrentChild());
         super.mergeOptions(options);
     }
 
     @Override
-    public void applyChildOptions(Options options, Component child) {
+    public void applyChildOptions(Options options, ViewController child) {
         super.applyChildOptions(options, child);
-        presenter.applyChildOptions(resolveCurrentOptions(), child);
-        if (child instanceof ReactComponent) {
-            fabOptionsPresenter.applyOptions(this.options.fabOptions, (ReactComponent) child, getView());
-        }
-        performOnParentController(parentController ->
-                ((ParentController) parentController).applyChildOptions(
+        presenter.applyChildOptions(resolveCurrentOptions(), this, child);
+        fabOptionsPresenter.applyOptions(this.options.fabOptions, child, getView());
+        performOnParentController(parent ->
+                parent.applyChildOptions(
                         this.options.copy()
                                 .clearTopBarOptions()
                                 .clearAnimationOptions()
@@ -111,58 +119,49 @@ public class StackController extends ParentController<StackLayout> {
     }
 
     @Override
-    public void mergeChildOptions(Options options, ViewController childController, Component child) {
-        super.mergeChildOptions(options, childController, child);
-        if (childController.isViewShown() && peek() == childController) {
-            presenter.mergeChildOptions(options, resolveCurrentOptions(), child);
-            if (options.fabOptions.hasValue() && child instanceof ReactComponent) {
-                fabOptionsPresenter.mergeOptions(options.fabOptions, (ReactComponent) child, getView());
+    public void mergeChildOptions(Options options, ViewController child) {
+        super.mergeChildOptions(options, child);
+        if (child.isViewShown() && peek() == child) {
+            presenter.mergeChildOptions(options, resolveCurrentOptions(), this, child);
+            if (options.fabOptions.hasValue()) {
+                fabOptionsPresenter.mergeOptions(options.fabOptions, child, getView());
             }
         }
-        performOnParentController(parentController ->
-                ((ParentController) parentController).mergeChildOptions(
+        performOnParentController(parent ->
+                parent.mergeChildOptions(
                         options.copy()
                                 .clearTopBarOptions()
                                 .clearAnimationOptions()
                                 .clearFabOptions()
                                 .clearTopTabOptions()
                                 .clearTopTabsOptions(),
-                        childController,
                         child
                 )
         );
     }
 
     @Override
-    public void onChildDestroyed(Component child) {
+    public void onChildDestroyed(ViewController child) {
         super.onChildDestroyed(child);
         presenter.onChildDestroyed(child);
     }
 
     public void push(ViewController child, CommandListener listener) {
+        if (findController(child.getId()) != null) {
+            listener.onError("A stack can't contain two children with the same id");
+            return;
+        }
         final ViewController toRemove = stack.peek();
         if (size() > 0) backButtonHelper.addToPushedChild(child);
         child.setParentController(this);
         stack.push(child.getId(), child);
         Options resolvedOptions = resolveCurrentOptions(presenter.getDefaultOptions());
-        addChildToStack(child, child.getView(), resolvedOptions);
+        addChildToStack(child, resolvedOptions);
 
         if (toRemove != null) {
-            if (resolvedOptions.animations.push.enabled.isTrueOrUndefined()) {
-                if (resolvedOptions.animations.push.waitForRender.isTrue()) {
-                    child.getView().setAlpha(0);
-                    child.addOnAppearedListener(() -> animator.push(child.getView(), resolvedOptions.animations.push, resolvedOptions.transitions, toRemove.getElements(), child.getElements(), () -> {
-                        getView().removeView(toRemove.getView());
-                        listener.onSuccess(child.getId());
-                    }));
-                } else {
-                    animator.push(child.getView(), resolvedOptions.animations.push, () -> {
-                        if (!toRemove.equals(peek())) {
-                            getView().removeView(toRemove.getView());
-                        }
-                        listener.onSuccess(child.getId());
-                    });
-                }
+            NestedAnimationsOptions animation = resolvedOptions.animations.push;
+            if (animation.enabled.isTrueOrUndefined()) {
+                animator.push(child, toRemove, resolvedOptions, () -> onPushAnimationComplete(child, toRemove, listener));
             } else {
                 getView().removeView(toRemove.getView());
                 listener.onSuccess(child.getId());
@@ -172,33 +171,40 @@ public class StackController extends ParentController<StackLayout> {
         }
     }
 
-    private void addChildToStack(ViewController child, View view, Options resolvedOptions) {
-        view.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    private void onPushAnimationComplete(ViewController toAdd, ViewController toRemove, CommandListener listener) {
+        if (!peek().equals(toRemove)) getView().removeView(toRemove.getView());
+        listener.onSuccess(toAdd.getId());
+    }
+
+    private void addChildToStack(ViewController child, Options resolvedOptions) {
         child.setWaitForRender(resolvedOptions.animations.push.waitForRender);
-        presenter.applyLayoutParamsOptions(resolvedOptions, view);
         if (size() == 1) presenter.applyInitialChildLayoutOptions(resolvedOptions);
-        getView().addView(view, getView().getChildCount() - 1);
+        getView().addView(child.getView(), getView().getChildCount() - 1, matchParentWithBehaviour(new StackBehaviour(this)));
     }
 
     public void setRoot(List<ViewController> children, CommandListener listener) {
         animator.cancelPushAnimations();
+        final ViewController toRemove = stack.peek();
         IdStack stackToDestroy = stack;
         stack = new IdStack<>();
+
+        ViewController child = last(children);
         if (children.size() == 1) {
-            backButtonHelper.clear(last(children));
-            push(last(children), new CommandListenerAdapter() {
-                @Override
-                public void onSuccess(String childId) {
-                    destroyStack(stackToDestroy);
-                    listener.onSuccess(childId);
-                }
-            });
+            backButtonHelper.clear(child);
         } else {
-            backButtonHelper.addToPushedChild(last(children));
-            push(last(children), new CommandListenerAdapter() {
-                @Override
-                public void onSuccess(String childId) {
-                    destroyStack(stackToDestroy);
+            backButtonHelper.addToPushedChild(child);
+        }
+
+        child.setParentController(this);
+        stack.push(child.getId(), child);
+        Options resolvedOptions = resolveCurrentOptions(presenter.getDefaultOptions());
+        addChildToStack(child, resolvedOptions);
+
+        CommandListener listenerAdapter = new CommandListenerAdapter() {
+            @Override
+            public void onSuccess(String childId) {
+                destroyStack(stackToDestroy);
+                if (children.size() > 1) {
                     for (int i = 0; i < children.size() - 1; i++) {
                         stack.set(children.get(i).getId(), children.get(i), i);
                         children.get(i).setParentController(StackController.this);
@@ -208,9 +214,26 @@ public class StackController extends ParentController<StackLayout> {
                             backButtonHelper.addToPushedChild(children.get(i));
                         }
                     }
-                    listener.onSuccess(childId);
                 }
-            });
+                listener.onSuccess(childId);
+            }
+        };
+
+        if (toRemove != null && resolvedOptions.animations.setStackRoot.enabled.isTrueOrUndefined()) {
+            if (resolvedOptions.animations.setStackRoot.waitForRender.isTrue()) {
+                child.getView().setAlpha(0);
+                child.addOnAppearedListener(() -> animator.push(
+                        child,
+                        toRemove,
+                        resolvedOptions,
+                        () -> listenerAdapter.onSuccess(child.getId())
+                    )
+                );
+            } else {
+                animator.push(child, toRemove, resolvedOptions, () -> listenerAdapter.onSuccess(child.getId()));
+            }
+        } else {
+            listenerAdapter.onSuccess(child.getId());
         }
     }
 
@@ -235,16 +258,14 @@ public class StackController extends ParentController<StackLayout> {
         disappearing.onViewWillDisappear();
         appearing.onViewWillAppear();
 
-        Options resolvedOptions = resolveCurrentOptions();
         ViewGroup appearingView = appearing.getView();
         if (appearingView.getLayoutParams() == null) {
-            appearingView.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-            presenter.applyLayoutParamsOptions(resolvedOptions, appearingView);
+            appearingView.setLayoutParams(matchParentWithBehaviour(new StackBehaviour(this)));
         }
         if (appearingView.getParent() == null) {
             getView().addView(appearingView, 0);
         }
-        presenter.onChildWillAppear(appearing.options, disappearing.options);
+        presenter.onChildWillAppear(this, appearing, disappearing);
         if (disappearingOptions.animations.pop.enabled.isTrueOrUndefined()) {
             animator.pop(disappearing.getView(), disappearingOptions.animations.pop, () -> finishPopping(disappearing, listener));
         } else {
@@ -255,6 +276,7 @@ public class StackController extends ParentController<StackLayout> {
     private void finishPopping(ViewController disappearing, CommandListener listener) {
         disappearing.destroy();
         listener.onSuccess(disappearing.getId());
+        eventEmitter.emitScreenPoppedEvent(disappearing.getId());
     }
 
     public void popTo(ViewController viewController, Options mergeOptions, CommandListener listener) {
@@ -329,7 +351,7 @@ public class StackController extends ParentController<StackLayout> {
     @Override
     protected StackLayout createView() {
         StackLayout stackLayout = new StackLayout(getActivity(), topBarController, getId());
-        presenter.bindView(topBarController.getView());
+        presenter.bindView(topBarController);
         addInitialChild(stackLayout);
         return stackLayout;
     }
@@ -337,11 +359,9 @@ public class StackController extends ParentController<StackLayout> {
     private void addInitialChild(StackLayout stackLayout) {
         if (isEmpty()) return;
         ViewGroup child = peek().getView();
-        child.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        Options options = resolveCurrentOptions();
-        presenter.applyLayoutParamsOptions(options, child);
-        presenter.applyInitialChildLayoutOptions(options);
-        stackLayout.addView(child, 0);
+        child.setId(CompatUtils.generateViewId());
+        presenter.applyInitialChildLayoutOptions(resolveCurrentOptions());
+        stackLayout.addView(child, 0, matchParentWithBehaviour(new StackBehaviour(this)));
     }
 
     private void onNavigationButtonPressed(String buttonId) {
@@ -371,6 +391,20 @@ public class StackController extends ParentController<StackLayout> {
     @Override
     public void clearTopTabs() {
         topBarController.clearTopTabs();
+    }
+
+    @Override
+    public boolean onDependentViewChanged(CoordinatorLayout parent, ViewGroup child, View dependency) {
+        perform(findController(child), controller -> {
+            if (dependency instanceof TopBar) presenter.applyTopInsets(this, controller);
+            if (dependency instanceof Fab || dependency instanceof FabMenu) updateBottomMargin(dependency, getBottomInset());
+        });
+        return false;
+    }
+
+    @Override
+    public int getTopInset(ViewController child) {
+        return presenter.getTopInset(resolveChildOptions(child));
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

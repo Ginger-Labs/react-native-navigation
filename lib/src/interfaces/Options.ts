@@ -3,14 +3,43 @@ import { ImageRequireSource, Insets } from 'react-native';
 
 type Color = string;
 type FontFamily = string;
+type FontWeight =
+  | 'regular'
+  | 'bold'
+  | 'thin'
+  | 'ultraLight'
+  | 'light'
+  | 'medium'
+  | 'semibold'
+  | 'heavy'
+  | 'black';
 type LayoutOrientation = 'portrait' | 'landscape';
 type AndroidDensityNumber = number;
-type SystemItemIcon = 'done' | 'cancel' | 'edit'
-  | 'save' | 'add' | 'flexibleSpace' | 'fixedSpace'
-  | 'compose' | 'reply' | 'action' | 'organize'
-  | 'bookmarks' | 'search' | 'refresh' | 'stop'
-  | 'camera' | 'trash' | 'play' | 'pause'
-  | 'rewind' | 'fastForward' | 'undo' | 'redo';
+type SystemItemIcon =
+  | 'done'
+  | 'cancel'
+  | 'edit'
+  | 'save'
+  | 'add'
+  | 'flexibleSpace'
+  | 'fixedSpace'
+  | 'compose'
+  | 'reply'
+  | 'action'
+  | 'organize'
+  | 'bookmarks'
+  | 'search'
+  | 'refresh'
+  | 'stop'
+  | 'camera'
+  | 'trash'
+  | 'play'
+  | 'pause'
+  | 'rewind'
+  | 'fastForward'
+  | 'undo'
+  | 'redo';
+type Interpolation = 'linear' | 'accelerateDecelerate' | 'decelerate' | 'accelerate' | 'decelerateAccelerate';
 
 export interface OptionsSplitView {
   /**
@@ -57,6 +86,7 @@ export interface OptionsStatusBar {
 }
 
 export interface OptionsLayout {
+  fitSystemWindows?: boolean;
   /**
    * Set the screen background color
    */
@@ -89,7 +119,7 @@ export enum OptionsModalPresentationStyle {
   overFullScreen = 'overFullScreen',
   overCurrentContext = 'overCurrentContext',
   currentContext = 'currentContext',
-  popOver = 'popOver',
+  popover = 'popover',
   fullScreen = 'fullScreen',
   none = 'none'
 }
@@ -118,6 +148,11 @@ export interface OptionsTopBarLargeTitle {
    * Set the font family of large title's text
    */
   fontFamily?: FontFamily;
+  /**
+   * Set the font weight, ignore fontFamily and use the iOS system fonts instead
+   * #### (iOS specific)
+   */
+  fontWeight?: FontWeight;
 }
 
 export interface OptionsTopBarTitle {
@@ -139,6 +174,11 @@ export interface OptionsTopBarTitle {
    * Make sure that the font is available
    */
   fontFamily?: FontFamily;
+  /**
+   * Set the font weight, ignore fontFamily and use the iOS system fonts instead
+   * #### (iOS specific)
+   */
+  fontWeight?: FontWeight;
   /**
    * Custom component as the title view
    */
@@ -190,6 +230,11 @@ export interface OptionsTopBarSubtitle {
    */
   fontFamily?: FontFamily;
   /**
+   * Set the font weight, ignore fontFamily and use the iOS system fonts instead
+   * #### (iOS specific)
+   */
+  fontWeight?: FontWeight;
+  /**
    * Set subtitle alignment
    */
   alignment?: 'center';
@@ -219,6 +264,18 @@ export interface OptionsTopBarBackButton {
    * Back button icon and text color
    */
   color?: Color;
+  /**
+   * Set subtitle font size
+   */
+  fontSize?: number;
+  /**
+   * Set subtitle font family
+   */
+  fontFamily?: FontFamily;
+  /**
+   * Set testID for reference in E2E tests
+   */
+  testID?: string;
 }
 
 export interface OptionsTopBarBackground {
@@ -263,18 +320,33 @@ export interface OptionsTopBarButton {
    */
   icon?: ImageRequireSource;
   /**
-  * Set the button icon insets
-  */
+   * Set the button icon insets
+   */
   iconInsets?: IconInsets;
   /**
    * Set the button as a custom component
    */
   component?: {
+    /**
+     * Component reference id, Auto generated if empty
+     */
+    id?: string;
+    /**
+     * Name of your component
+     */
     name: string;
     /**
      * Properties to pass down to the component
      */
     passProps?: object;
+    /**
+     * (Android only) component width
+     */
+    width?: number;
+    /**
+     * (Android only) component height
+     */
+    height?: number;
   };
   /**
    * (iOS only) Set the button as an iOS system icon
@@ -285,9 +357,18 @@ export interface OptionsTopBarButton {
    */
   text?: string;
   /**
+   * Overrides the text that's read by the screen reader when the user interacts with the element
+   */
+  accessibilityLabel?: string;
+  /**
    * Set the button font family
    */
   fontFamily?: string;
+  /**
+   * Set the font weight, ignore fontFamily and use the iOS system fonts instead
+   * #### (iOS specific)
+   */
+  fontWeight?: FontWeight;
   /**
    * Set the button enabled or disabled
    * @default true
@@ -311,7 +392,7 @@ export interface OptionsTopBarButton {
   testID?: string;
   /**
    * (Android only) Set showAsAction value
-   * @see {@link https://developer.android.com/guide/topics/resources/menu-resource|Android developer guide: Menu resource} 
+   * @see {@link https://developer.android.com/guide/topics/resources/menu-resource|Android developer guide: Menu resource}
    */
   showAsAction?: 'ifRoom' | 'withText' | 'always' | 'never';
 }
@@ -434,6 +515,40 @@ export interface OptionsTopBar {
   topMargin?: number;
 }
 
+export interface SharedElementTransition {
+  fromId: string;
+  toId: string;
+  duration?: number;
+  interpolation: Interpolation;
+}
+
+export interface ElementTransition {
+  id: string;
+  alpha?: AppearingElementAnimation | DisappearingElementAnimation;
+  translationX?: AppearingElementAnimation | DisappearingElementAnimation;
+  translationY?: AppearingElementAnimation | DisappearingElementAnimation;
+  scaleX?: AppearingElementAnimation | DisappearingElementAnimation;
+  scaleY?: AppearingElementAnimation | DisappearingElementAnimation;
+  rotationX?: AppearingElementAnimation | DisappearingElementAnimation;
+  rotationY?: AppearingElementAnimation | DisappearingElementAnimation;
+  x?: AppearingElementAnimation | DisappearingElementAnimation;
+  y?: AppearingElementAnimation | DisappearingElementAnimation;
+}
+
+export interface AppearingElementAnimation extends ElementAnimation {
+  from: number;
+}
+
+export interface DisappearingElementAnimation extends ElementAnimation {
+  to: number;
+}
+
+export interface ElementAnimation {
+  duration: number;
+  startDelay?: number;
+  interpolation: Interpolation;
+}
+
 export interface OptionsFab {
   id: string;
   backgroundColor?: Color;
@@ -458,6 +573,12 @@ export interface OptionsBottomTabs {
    * Enable animations when toggling visibility
    */
   animate?: boolean;
+  /**
+   * Use large icons when possible, even when three tabs without titles are displayed
+   * #### (android specific)
+   * @default false
+   */
+  preferLargeIcons?: boolean;
   /**
    * Switch to another screen within the bottom tabs via index (starting from 0)
    */
@@ -504,7 +625,11 @@ export interface OptionsBottomTabs {
    * Control the text display mode below the tab icon
    * #### (Android specific)
    */
-  titleDisplayMode?: 'alwaysShow' | 'showWhenActive' | 'alwaysHide';
+  titleDisplayMode?:
+    | 'alwaysShow'
+    | 'showWhenActive'
+    | 'alwaysHide'
+    | 'showWhenActiveForce';
   /**
    * Set the elevation of the Bottom Tabs in dp
    * #### (Android specific)
@@ -512,7 +637,20 @@ export interface OptionsBottomTabs {
   elevation?: AndroidDensityNumber;
 }
 
+export interface DotIndicatorOptions {
+  // default red
+  color?: Color;
+  // default 6
+  size?: number;
+  // default false
+  visible?: boolean;
+}
+
+export type ImageResource = string;
+
 export interface OptionsBottomTab {
+  dotIndicator?: DotIndicatorOptions;
+
   /**
    * Set the text to display below the icon
    */
@@ -532,7 +670,7 @@ export interface OptionsBottomTab {
   /**
    * Set the tab icon
    */
-  icon?: ImageRequireSource;
+  icon?: ImageRequireSource | ImageResource;
   /**
    * Set the icon tint
    */
@@ -553,6 +691,11 @@ export interface OptionsBottomTab {
    * Set the text font family
    */
   fontFamily?: FontFamily;
+  /**
+   * Set the font weight, ignore fontFamily and use the iOS system fonts instead
+   * #### (iOS specific)
+   */
+  fontWeight?: FontWeight;
   /**
    * Set the text font size
    */
@@ -582,6 +725,11 @@ export interface OptionsBottomTab {
    * #### (Android specific)
    */
   selectedFontSize?: number;
+  /**
+   * If it's set to false, pressing a tab won't select the tab
+   * instead it will emit a bottomTabPressedEvent
+   */
+  selectTabOnPress?: boolean;
 }
 
 export interface SideMenuSide {
@@ -601,6 +749,12 @@ export interface SideMenuSide {
    * Set the height of the side menu
    */
   height?: number;
+  /**
+   * Stretch sideMenu contents when opened past the width
+   * #### (iOS specific)
+   * @default true
+   */
+  shouldStretchDrawer?: boolean;
 }
 
 export interface OptionsSideMenu {
@@ -630,6 +784,14 @@ export interface OverlayOptions {
    * Set this to true if your Overlay contains a TextInput.
    */
   handleKeyboardEvents?: boolean;
+}
+
+export interface ModalOptions {
+  /**
+   * Control wether this modal should be dismiss using swipe gesture when the modalPresentationStyle = 'pageSheet'
+   * #### (iOS specific)
+   */
+  swipeToDismiss?: boolean;
 }
 
 export interface OptionsPreviewAction {
@@ -709,13 +871,21 @@ export interface OptionsAnimationPropertyConfig {
  */
 export interface ScreenAnimationOptions {
   /**
-   * Animate the element over translateX
+   * Animate the element over x value
    */
   x?: OptionsAnimationPropertyConfig;
   /**
-   * Animate the element over translateY
+   * Animate the element over y value
    */
   y?: OptionsAnimationPropertyConfig;
+  /**
+   * Animate the element over translateX
+   */
+  translationX?: OptionsAnimationPropertyConfig;
+  /**
+   * Animate the element over translateY
+   */
+  translationY?: OptionsAnimationPropertyConfig;
   /**
    * Animate the element over opacity
    */
@@ -802,6 +972,14 @@ export interface StackAnimationOptions {
    * Configure animations for the content (Screen)
    */
   content?: ViewAnimationOptions;
+  /**
+   * Animations to be applied on elements which are shared between the appearing and disappearing screens
+   */
+  sharedElementTransitions?: SharedElementTransition[];
+  /**
+   * Animations to be applied on views in the appearing or disappearing screens
+   */
+  elementTransitions?: ElementTransition[];
 }
 
 /**
@@ -809,9 +987,13 @@ export interface StackAnimationOptions {
  */
 export interface AnimationOptions {
   /**
+   * Configure the setStackRoot animation
+   */
+  setStackRoot?: ViewAnimationOptions;
+  /**
    * Configure the setRoot animation
    */
-  setRoot?: ScreenAnimationOptions;
+  setRoot?: ViewAnimationOptions;
   /**
    * Configure what animates when a screen is pushed
    */
@@ -823,43 +1005,19 @@ export interface AnimationOptions {
   /**
    * Configure what animates when modal is shown
    */
-  showModal?: ScreenAnimationOptions;
+  showModal?: ViewAnimationOptions;
   /**
    * Configure what animates when modal is dismissed
    */
-  dismissModal?: ScreenAnimationOptions;
+  dismissModal?: ViewAnimationOptions;
 }
 
-export interface OptionsCustomTransition {
-  animations: OptionsCustomTransitionAnimation[];
-  duration?: number;
-}
-
-export interface OptionsCustomTransitionAnimation {
-  /**
-   * Animation type, only support sharedElement currently
-   */
-  type: 'sharedElement';
-  /**
-   * Transition from element Id
-   */
-  fromId: string;
-  /**
-   * Transition to element Id
-   */
-  toId: string;
-  /**
-   * Animation delay
-   */
-  startDelay?: number;
-  /**
-   * Animation spring Velocity
-   */
-  springVelocity?: number;
-  /**
-   * Animation duration
-   */
-  duration?: number;
+/**
+ * Configure Android's NavigationBar
+ */
+export interface NavigationBarOptions {
+  backgroundColor?: Color;
+  visible?: boolean;
 }
 
 export interface Options {
@@ -907,6 +1065,10 @@ export interface Options {
    */
   overlay?: OverlayOptions;
   /**
+   * Configure the modal
+   */
+  modal?: ModalOptions;
+  /**
    * Animation used for navigation commands that modify the layout
    * hierarchy can be controlled in options.
    *
@@ -935,25 +1097,10 @@ setRoot: {
   animations?: AnimationOptions;
 
   /**
-   * Custom Transition used for animate shared element between two screens
-   * Example:
-  ```js
-  Navigation.push(this.props.componentId, {
-    component: {
-      name: 'second.screen',
-      options: {
-        customTransition: {
-          animations: [
-            { type: 'sharedElement', fromId: 'image1', toId: 'image2', startDelay: 0, springVelocity: 0.2, duration: 0.5 }
-          ],
-          duration: 0.8
-        }
-      }
-    }
-  });
-  ```
-  */
-  customTransition?: OptionsCustomTransition;
+   * Configure Android's NavigationBar
+   */
+  navigationBar?: NavigationBarOptions;
+
   /**
    * Preview configuration for Peek and Pop
    * #### (iOS specific)

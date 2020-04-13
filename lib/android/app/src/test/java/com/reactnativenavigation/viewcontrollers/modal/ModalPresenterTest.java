@@ -19,11 +19,15 @@ import com.reactnativenavigation.viewcontrollers.ViewController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,7 +42,7 @@ public class ModalPresenterTest extends BaseTest {
     private ModalPresenter uut;
     private ModalAnimator animator;
     private ViewController root;
-    private FrameLayout modalsLayout;
+    private CoordinatorLayout modalsLayout;
 
     @Override
     public void beforeEach() {
@@ -49,7 +53,7 @@ public class ModalPresenterTest extends BaseTest {
         FrameLayout contentLayout = new FrameLayout(activity);
         FrameLayout rootLayout = new FrameLayout(activity);
         rootLayout.addView(root.getView());
-        modalsLayout = new FrameLayout(activity);
+        modalsLayout = new CoordinatorLayout(activity);
         contentLayout.addView(rootLayout);
         contentLayout.addView(modalsLayout);
         activity.setContentView(contentLayout);
@@ -70,6 +74,7 @@ public class ModalPresenterTest extends BaseTest {
         uut.showModal(modal1, root, new CommandListenerAdapter());
         verify(modal1).setWaitForRender(any());
         verify(modal1).resolveCurrentOptions(defaultOptions);
+        assertThat(modal1.getView().getFitsSystemWindows()).isTrue();
     }
 
     @Test
@@ -95,7 +100,7 @@ public class ModalPresenterTest extends BaseTest {
     public void showModal_resolvesDefaultOptions() throws JSONException {
         Options defaultOptions = new Options();
         JSONObject disabledShowModalAnimation = new JSONObject().put("enabled", false);
-        defaultOptions.animations.showModal = AnimationOptions.parse(disabledShowModalAnimation);
+        defaultOptions.animations.showModal = new AnimationOptions(disabledShowModalAnimation);
 
         uut.setDefaultOptions(defaultOptions);
         uut.showModal(modal1, root, new CommandListenerAdapter());
@@ -236,5 +241,36 @@ public class ModalPresenterTest extends BaseTest {
         CommandListenerAdapter listener = Mockito.mock(CommandListenerAdapter.class);
         uut.dismissModal(modal1, root, root, listener);
         verify(listener).onError(any());
+    }
+
+    @Test
+    public void dismissModal_successIsReportedBeforeViewIsDestroyed() {
+        disableShowModalAnimation(modal1);
+        disableDismissModalAnimation(modal1);
+        CommandListenerAdapter listener = Mockito.mock(CommandListenerAdapter.class);
+        ViewController modal = spy(modal1);
+        InOrder inOrder = inOrder(listener, modal);
+
+        uut.showModal(modal, root, new CommandListenerAdapter());
+
+        uut.dismissModal(modal, root, root, listener);
+        inOrder.verify(listener).onSuccess(modal.getId());
+        inOrder.verify(modal).destroy();
+    }
+
+    @Test
+    public void dismissModal_modalsLayoutIfHiddenIsAllModalsAreDismissed() {
+        disableShowModalAnimation(modal1, modal2);
+        disableDismissModalAnimation(modal1, modal2);
+
+        uut.showModal(modal1, root, new CommandListenerAdapter());
+        assertVisible(modalsLayout);
+        uut.showModal(modal2, modal1, new CommandListenerAdapter());
+        assertVisible(modalsLayout);
+
+        uut.dismissModal(modal2, modal1, root, new CommandListenerAdapter());
+        assertVisible(modalsLayout);
+        uut.dismissModal(modal1, root, root, new CommandListenerAdapter());
+        assertGone(modalsLayout);
     }
 }

@@ -1,10 +1,14 @@
 package com.reactnativenavigation.parse.params;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Text extends Param<String> {
     public Text(String value) {
         super(value);
+    }
+
+    public int length() {
+        return hasValue() ? value.length() : 0;
     }
 
     @NonNull

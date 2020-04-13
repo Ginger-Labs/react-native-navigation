@@ -1,10 +1,11 @@
 package com.reactnativenavigation.viewcontrollers.navigator;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.facebook.react.ReactInstanceManager;
 import com.reactnativenavigation.BaseTest;
 import com.reactnativenavigation.TestActivity;
 import com.reactnativenavigation.TestUtils;
@@ -16,9 +17,10 @@ import com.reactnativenavigation.parse.params.Bool;
 import com.reactnativenavigation.parse.params.Text;
 import com.reactnativenavigation.presentation.BottomTabPresenter;
 import com.reactnativenavigation.presentation.BottomTabsPresenter;
-import com.reactnativenavigation.presentation.Presenter;
 import com.reactnativenavigation.presentation.OverlayManager;
-import com.reactnativenavigation.react.EventEmitter;
+import com.reactnativenavigation.presentation.Presenter;
+import com.reactnativenavigation.presentation.RootPresenter;
+import com.reactnativenavigation.react.events.EventEmitter;
 import com.reactnativenavigation.utils.CommandListener;
 import com.reactnativenavigation.utils.CommandListenerAdapter;
 import com.reactnativenavigation.utils.CompatUtils;
@@ -34,8 +36,6 @@ import com.reactnativenavigation.viewcontrollers.modal.ModalStack;
 import com.reactnativenavigation.viewcontrollers.stack.StackController;
 import com.reactnativenavigation.views.BottomTabs;
 
-import com.facebook.react.ReactInstanceManager;
-
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -46,7 +46,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
@@ -116,6 +119,12 @@ public class NavigatorTest extends BaseTest {
     }
 
     @Test
+    public void setContentLayout() {
+        ViewGroup contentLayout = Mockito.mock(ViewGroup.class);
+        uut.setContentLayout(contentLayout);
+    }
+
+    @Test
     public void bindViews() {
         verify(rootPresenter).setRootContainer(uut.getRootLayout());
         verify(modalStack).setModalsLayout(uut.getModalsLayout());
@@ -146,7 +155,7 @@ public class NavigatorTest extends BaseTest {
     @Test
     public void setRoot_clearsSplashLayout() {
         FrameLayout content = activity.findViewById(android.R.id.content);
-        assertThat(content.getChildCount()).isEqualTo(4); // 3 frame layouts and the default splash layout
+        assertThat(content.getChildCount()).isEqualTo(4); // 3 frame layouts (root, modal and overlay containers) and the default splash layout
 
         uut.setRoot(child2, new CommandListenerAdapter(), reactInstanceManager);
 
@@ -164,6 +173,30 @@ public class NavigatorTest extends BaseTest {
         uut.setRoot(child1, new CommandListenerAdapter(), reactInstanceManager);
         uut.setRoot(child2, new CommandListenerAdapter(), reactInstanceManager);
         assertIsChild(uut.getRootLayout(), child2.getView());
+    }
+
+    @Test
+    public void setRoot_WithWaitForRender() {
+        ViewController initialRoot = spy(child2);
+        uut.setRoot(initialRoot, new CommandListenerAdapter(), reactInstanceManager);
+
+        child3.options.animations.setRoot.waitForRender = new Bool(true);
+        ViewController secondRoot = spy(child3);
+        CommandListenerAdapter listener = spy(new CommandListenerAdapter());
+        uut.setRoot(secondRoot, listener, reactInstanceManager);
+
+        verify(secondRoot).addOnAppearedListener(any());
+
+        secondRoot.getView().addView(new View(activity)); // make isRendered return true and trigger onViewAppeared
+        assertThat(initialRoot.isDestroyed()).isTrue();
+        assertThat(secondRoot.isViewShown()).isEqualTo(true);
+    }
+
+    @Test
+    public void setRoot_destroysModals() {
+        uut.showModal(child1, new CommandListenerAdapter());
+        uut.setRoot(child2, new CommandListenerAdapter(), reactInstanceManager);
+        assertTrue(child1.isDestroyed());
     }
 
     @Test
@@ -472,19 +505,16 @@ public class NavigatorTest extends BaseTest {
 
     @Test
     public void pushedStackCanBePopped() {
-        child1.options.animations.push.enabled = new Bool(false);
-        child2.options.animations.push.enabled = new Bool(false);
         StackController spy = spy(parentController);
-        StackController parent = newStack();
-        parent.ensureViewIsCreated();
-        uut.setRoot(parent, new CommandListenerAdapter(), reactInstanceManager);
-        parent.push(spy, new CommandListenerAdapter());
-
+        disablePushAnimation(spy, child1, child2);
         spy.push(child1, new CommandListenerAdapter());
         spy.push(child2, new CommandListenerAdapter());
-        assertThat(spy.getChildControllers().size()).isEqualTo(2);
-        child1.ensureViewIsCreated();
-        child2.ensureViewIsCreated();
+
+        StackController parent = newStack();
+        parent.push(spy, new CommandListenerAdapter());
+        parent.options.animations.setRoot.enabled = new Bool(false);
+
+        uut.setRoot(parent, new CommandListenerAdapter(), reactInstanceManager);
 
         CommandListenerAdapter listener = new CommandListenerAdapter() {
             @Override
@@ -492,6 +522,7 @@ public class NavigatorTest extends BaseTest {
                 assertThat(spy.getChildControllers().size()).isEqualTo(1);
             }
         };
+        disablePopAnimation(child2);
         uut.pop("child2", Options.EMPTY, listener);
         verify(spy, times(1)).pop(Options.EMPTY, listener);
     }
@@ -537,11 +568,11 @@ public class NavigatorTest extends BaseTest {
         disableModalAnimations(child1);
 
         uut.setRoot(parentController, new CommandListenerAdapter(), reactInstanceManager);
-        assertThat(ViewUtils.isChildOf(uut.getRootLayout(), parentController.getView()));
+        assertThat(ViewUtils.isChildOf(uut.getRootLayout(), parentController.getView())).isTrue();
         uut.showModal(child1, new CommandListenerAdapter());
 
         uut.dismissModal(child1.getId(), new CommandListenerAdapter());
-        assertThat(ViewUtils.isChildOf(uut.getRootLayout(), parentController.getView()));
+        assertThat(ViewUtils.isChildOf(uut.getRootLayout(), parentController.getView())).isTrue();
     }
 
     @Test
@@ -565,6 +596,7 @@ public class NavigatorTest extends BaseTest {
     public void dismissAllModals_onViewAppearedInvokedOnRoot() {
         disablePushAnimation(child2);
         disableShowModalAnimation(child1);
+        uut.setRoot(child3, new CommandListenerAdapter(), reactInstanceManager);
 
         uut.dismissAllModals(Options.EMPTY, new CommandListenerAdapter());
         verify(parentVisibilityListener, times(0)).onViewAppeared(parentController.getView());
@@ -627,7 +659,7 @@ public class NavigatorTest extends BaseTest {
     public void destroy_destroyOverlayManager() {
         uut.setRoot(parentController, new CommandListenerAdapter(), reactInstanceManager);
         activityController.destroy();
-        verify(overlayManager).destroy();
+        verify(overlayManager).destroy(uut.getOverlaysLayout());
     }
 
     @Test

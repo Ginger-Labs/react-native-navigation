@@ -1,20 +1,30 @@
 package com.reactnativenavigation.viewcontrollers;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.reactnativenavigation.interfaces.ScrollEventListener;
 import com.reactnativenavigation.parse.Options;
 import com.reactnativenavigation.presentation.ComponentPresenter;
 import com.reactnativenavigation.presentation.Presenter;
+import com.reactnativenavigation.utils.StatusBarUtils;
 import com.reactnativenavigation.views.ComponentLayout;
 import com.reactnativenavigation.views.ReactComponent;
 
-public class ComponentViewController extends ChildController<ComponentLayout> {
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
+import static com.reactnativenavigation.utils.ObjectUtils.perform;
+
+public class ComponentViewController extends ChildController<ComponentLayout> {
     private final String componentName;
     private ComponentPresenter presenter;
     private final ReactViewCreator viewCreator;
+
+    ReactComponent getComponent() {
+        return view;
+    }
 
     public ComponentViewController(final Activity activity,
                                    final ChildControllersRegistry childRegistry,
@@ -31,20 +41,30 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
     }
 
     @Override
+    public String getCurrentComponentName() {
+        return this.componentName;
+    }
+
+    @Override
     public void setDefaultOptions(Options defaultOptions) {
         super.setDefaultOptions(defaultOptions);
         presenter.setDefaultOptions(defaultOptions);
     }
 
     @Override
+    public ScrollEventListener getScrollEventListener() {
+        return perform(view, null, ComponentLayout::getScrollEventListener);
+    }
+
+    @Override
     public void onViewAppeared() {
         super.onViewAppeared();
-        view.sendComponentStart();
+        if (view != null) view.sendComponentStart();
     }
 
     @Override
     public void onViewDisappear() {
-        view.sendComponentStop();
+        if (view != null) view.sendComponentStop();
         super.onViewDisappear();
     }
 
@@ -55,6 +75,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
 
     @Override
     public void applyOptions(Options options) {
+        if (isRoot()) applyTopInset();
         super.applyOptions(options);
         getView().applyOptions(options);
         presenter.applyOptions(getView(), resolveCurrentOptions(presenter.defaultOptions));
@@ -62,26 +83,48 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
 
     @Override
     public boolean isViewShown() {
-        return super.isViewShown() && view.isReady();
+        return super.isViewShown() && view != null && view.isReady();
     }
 
     @NonNull
     @Override
     protected ComponentLayout createView() {
-        view = (ComponentLayout) viewCreator.create(getActivity(), getId(), componentName);
+        ComponentLayout view = (ComponentLayout) viewCreator.create(getActivity(), getId(), componentName);
         return (ComponentLayout) view.asView();
     }
 
     @Override
     public void mergeOptions(Options options) {
         if (options == Options.EMPTY) return;
-        presenter.mergeOptions(getView(), options);
-        performOnParentController(parentController -> parentController.mergeChildOptions(options, this, getView()));
+        if (isViewShown()) presenter.mergeOptions(getView(), options);
         super.mergeOptions(options);
     }
 
-    ReactComponent getComponent() {
-        return view;
+    @Override
+    public void applyTopInset() {
+        if (view != null) presenter.applyTopInsets(view, getTopInset());
+    }
+
+    @Override
+    public int getTopInset() {
+        int statusBarInset = resolveCurrentOptions().statusBar.isHiddenOrDrawBehind() ? 0 : StatusBarUtils.getStatusBarHeight(getActivity());
+        return statusBarInset + perform(getParentController(), 0, p -> p.getTopInset(this));
+    }
+
+    @Override
+    public void applyBottomInset() {
+        if (view != null) presenter.applyBottomInset(view, getBottomInset());
+    }
+
+    @Override
+    protected WindowInsetsCompat applyWindowInsets(ViewController view, WindowInsetsCompat insets) {
+        ViewCompat.onApplyWindowInsets(view.getView(), insets.replaceSystemWindowInsets(
+                insets.getSystemWindowInsetLeft(),
+                insets.getSystemWindowInsetTop(),
+                insets.getSystemWindowInsetRight(),
+                Math.max(insets.getSystemWindowInsetBottom() - getBottomInset(), 0)
+        ));
+        return insets;
     }
 
     @Override
