@@ -133,16 +133,73 @@ commandCompletedListener.remove();
 |**completionTime**|Timestamp when the command, and consecutive animations, completed.|
 
 ## registerModalDismissedListener
+
 Invoked when modal dismissed.
 
 ```js
+class MyComponent extends Component {
+
+  componentDidMount() {
+    this.navigationEventListener = Navigation.events().bindComponent(this);
+  }
+
+  componentWillUnmount() {
+    // Not mandatory
+    if (this.navigationEventListener) {
+      this.navigationEventListener.remove();
+    }
+  }
+
+  modalDismissed({ componentId, componentName, modalsDismissed }) {
+
+  }
+}
+```
+
+This event can be observed globally as well:
+
+```js
 // Subscribe
-const modalDismissedListener = Navigation.events().registerModalDismissedListener(({ componentId, modalsDismissed }) => {
+const modalDismissedListener = Navigation.events().registerModalDismissedListener(({ componentId, componentName, modalsDismissed }) => {
 
 });
 ...
 // Unsubscribe
 modalDismissedListener.remove();
+```
+|       Parameter         | Description |
+|:--------------------:|:-----|
+|**componentId**| Id of the dismissing modal|
+|**componentName**|Registered name used when registering the component with `Navigation.registerComponent()`|
+|**modalsDismissed**|Number of modals dismissed.|
+
+## registerModalAttemptedToDismissListener(iOS 13+ only)
+Invoked only on iOS pageSheet modal when swipeToDismiss flag is set to true and modal swiped down to dismiss.
+
+```js
+// Subscribe
+const modalAttemptedToDismissListener = Navigation.events().registerModalAttemptedToDismissListener(({ componentId }) => {
+
+});
+...
+// Unsubscribe
+modalDismissedListener.remove();
+```
+|       Parameter         | Description |
+|:--------------------:|:-----|
+|**componentId** | Id of the modal tried to dismiss|
+
+## registerScreenPoppedListener
+Invoked when screen is popped.
+
+```js
+// Subscribe
+const screenPoppedListener = Navigation.events().registerScreenPoppedListener(({ componentId }) => {
+
+});
+...
+// Unsubscribe
+screenPoppedListener.remove();
 ```
 
 |       Parameter         | Description |
@@ -156,6 +213,19 @@ Invoked when a BottomTab is selected by the user.
 ```js
 // Subscribe
 const bottomTabEventListener = Navigation.events().registerBottomTabSelectedListener(({ selectedTabIndex, unselectedTabIndex }) => {
+
+});
+...
+// Unsubscribe
+bottomTabEventListener.remove();
+```
+
+## registerBottomTabLongPressedListener
+Invoked when a BottomTab is long pressed by the user.
+
+```js
+// Subscribe
+const bottomTabEventListener = Navigation.events().registerBottomTabLongPressedListener(({ selectedTabIndex }) => {
 
 });
 ...

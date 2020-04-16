@@ -6,8 +6,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.widget.ActionMenuView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,14 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import androidx.appcompat.widget.ActionMenuView;
+import androidx.appcompat.widget.Toolbar;
+
+import static com.reactnativenavigation.utils.ObjectUtils.perform;
 import static com.reactnativenavigation.utils.UiUtils.runOnPreDrawOnce;
+import static com.reactnativenavigation.utils.ViewUtils.findChildByClass;
+import static com.reactnativenavigation.utils.ViewUtils.findChildrenByClass;
+import static com.reactnativenavigation.utils.ViewUtils.removeFromParent;
 
 @SuppressLint("ViewConstructor")
 public class TitleBar extends Toolbar {
@@ -66,6 +71,7 @@ public class TitleBar extends Toolbar {
     }
 
     public void setComponent(View component) {
+        if (this.component == component) return;
         clearTitle();
         clearSubtitle();
         this.component = component;
@@ -106,11 +112,10 @@ public class TitleBar extends Toolbar {
 
     public void alignTextView(Alignment alignment, TextView view) {
         if (StringUtils.isEmpty(view.getText())) return;
-        Integer direction = view.getParent().getLayoutDirection();
+        int direction = view.getParent().getLayoutDirection();
         boolean isRTL = direction == View.LAYOUT_DIRECTION_RTL;
 
         if (alignment == Alignment.Center) {
-            //noinspection IntegerDivisionInFloatingPointContext
             view.setX((getWidth() - view.getWidth()) / 2);
         } else if (leftButtonController != null) {
             view.setX(isRTL ? (getWidth() - view.getWidth()) - getContentInsetStartWithNavigation() : getContentInsetStartWithNavigation());
@@ -125,30 +130,32 @@ public class TitleBar extends Toolbar {
 
         if(changed || isTitleChanged) {
             TextView title = findTitleTextView();
-            if (title != null) {
-                this.alignTextView(titleAlignment, title);
-            }
+            if (title != null) this.alignTextView(titleAlignment, title);
             isTitleChanged = false;
         }
 
         if(changed || isSubtitleChanged) {
             TextView subtitle = findSubtitleTextView();
-            if (subtitle != null) {
-                this.alignTextView(subtitleAlignment, subtitle);
-            }
+            if (subtitle != null) this.alignTextView(subtitleAlignment, subtitle);
             isSubtitleChanged = false;
         }
     }
 
+    @Override
+    public void setLayoutDirection(int layoutDirection) {
+        super.setLayoutDirection(layoutDirection);
+        perform(findChildByClass(this, ActionMenuView.class), buttonsContainer -> buttonsContainer.setLayoutDirection(layoutDirection));
+    }
+
     @Nullable
     public TextView findTitleTextView() {
-        List<TextView> children = ViewUtils.findChildrenByClass(this, TextView.class, textView -> textView.getText().equals(getTitle()));
+        List<TextView> children = findChildrenByClass(this, TextView.class, textView -> textView.getText().equals(getTitle()));
         return children.isEmpty() ? null : children.get(0);
     }
 
     @Nullable
     public TextView findSubtitleTextView() {
-        List<TextView> children = ViewUtils.findChildrenByClass(this, TextView.class, textView -> textView.getText().equals(getSubtitle()));
+        List<TextView> children = findChildrenByClass(this, TextView.class, textView -> textView.getText().equals(getSubtitle()));
         return children.isEmpty() ? null : children.get(0);
     }
 
@@ -170,7 +177,7 @@ public class TitleBar extends Toolbar {
 
     private void clearComponent() {
         if (component != null) {
-            removeView(component);
+            removeFromParent(component);
             component = null;
         }
     }
