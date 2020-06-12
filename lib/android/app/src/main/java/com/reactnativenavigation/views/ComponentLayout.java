@@ -2,6 +2,7 @@ package com.reactnativenavigation.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
