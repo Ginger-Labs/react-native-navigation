@@ -10,6 +10,7 @@
 @implementation RNNBottomTabsController {
 	NSUInteger _currentTabIndex;
     BottomTabsBaseAttacher* _bottomTabsAttacher;
+    BOOL _tabBarNeedsRestore;
     
 }
 
@@ -103,10 +104,28 @@
     return children.count ? children[_currentTabIndex] : nil;
 }
 
+- (void)setSelectedViewController:(__kindof UIViewController *)selectedViewController {
+    NSArray* children = self.pendingChildViewControllers ?: self.childViewControllers;
+    _currentTabIndex = [children indexOfObject:selectedViewController];
+    [super setSelectedViewController:selectedViewController];
+}
+
 - (void)loadChildren:(NSArray *)children {
     if (self.viewWillAppearOnce) {
         [super loadChildren:children];
         self.pendingChildViewControllers = nil;
+    }
+}
+
+- (void)setTabBarVisible:(BOOL)visible animated:(BOOL)animated {
+    _tabBarNeedsRestore = YES;
+    visible ? [self showTabBar:animated] : [self hideTabBar:animated];
+}
+
+- (void)restoreTabBarVisibility:(BOOL)visible {
+    if (_tabBarNeedsRestore) {
+        [self setTabBarVisible:visible animated:NO];
+        _tabBarNeedsRestore = NO;
     }
 }
 
