@@ -19,6 +19,10 @@ public class OverlayManager {
         overlaysContainer.setVisibility(View.VISIBLE);
         overlayRegistry.put(overlay.getId(), overlay);
         overlay.addOnAppearedListener(() -> listener.onSuccess(overlay.getId()));
+        // This fixes snackbar issue where bar is not clickable, clicks are gone through the view.
+        if (overlay.options.overlayOptions.interceptTouchOutside != null && overlay.options.overlayOptions.interceptTouchOutside.isFalse()) {
+            overlay.getView().setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        }
         overlaysContainer.addView(overlay.getView(), matchParentWithBehaviour(new BehaviourDelegate(overlay)));
     }
 
