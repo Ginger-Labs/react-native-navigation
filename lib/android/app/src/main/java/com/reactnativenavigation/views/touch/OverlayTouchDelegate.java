@@ -38,8 +38,20 @@ public class OverlayTouchDelegate {
         return interceptTouchOutside.isFalse();
     }
 
+    // private boolean isTouchInsideOverlay(MotionEvent ev) {
+    //     getOverlayView().getHitRect(hitRect);
+    //     return hitRect.contains((int) ev.getRawX(), (int) ev.getRawY());
+    // }
+
+    // This fixes snackbar issue where bar is not clickable, clicks are gone through the view.
     private boolean isTouchInsideOverlay(MotionEvent ev) {
-        getOverlayView().getHitRect(hitRect);
+        int[] l = new int[2];
+        View view =  getOverlayView();
+        view.getLocationOnScreen(l);
+        hitRect.left = l[0];
+        hitRect.top = l[1];
+        hitRect.right = hitRect.left + view.getWidth();
+        hitRect.bottom = hitRect.top + view.getHeight();
         return hitRect.contains((int) ev.getRawX(), (int) ev.getRawY());
     }
 
