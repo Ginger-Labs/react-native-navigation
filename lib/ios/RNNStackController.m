@@ -42,6 +42,7 @@
 	[self.presenter applyOptionsOnViewDidLayoutSubviews:self.resolveOptions];
 
 	self.sswAnimator = [[SSWAnimator alloc] init];
+	self.sswAnimator.delegate = self;
 
 	SSWDirectionalPanGestureRecognizer *panRecognizer = [[SSWDirectionalPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
 	panRecognizer.direction = SSWPanDirectionRight;
@@ -184,6 +185,16 @@
 		[(id)otherGestureRecognizer cancel];
 	}
 	return NO;
+}
+
+#pragma mark - SSWAnimatorDelegate
+
+- (BOOL)animatorShouldAnimateTabBar:(SSWAnimator *)animator {
+	return NO;
+}
+
+- (CGFloat)animatorTransitionDimAmount:(SSWAnimator *)animator {
+	return 0.2f;
 }
 
 @end

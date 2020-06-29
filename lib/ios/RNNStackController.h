@@ -4,7 +4,7 @@
 #import "UINavigationController+RNNCommands.h"
 #import "UIViewController+LayoutProtocol.h"
 
-@interface RNNStackController : UINavigationController <RNNLayoutProtocol>
+@interface RNNStackController : UINavigationController <RNNLayoutProtocol, SSWAnimatorDelegate>
 
 @property (nonatomic, retain) RNNStackPresenter* presenter;
 
