@@ -3,6 +3,7 @@
 #import "UINavigationController+RNNOptions.h"
 #import "UINavigationController+RNNCommands.h"
 #import "UIViewController+LayoutProtocol.h"
+#import "SSWAnimator.h"
 
 @interface RNNStackController : UINavigationController <RNNLayoutProtocol, SSWAnimatorDelegate>
 
