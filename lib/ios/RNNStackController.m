@@ -194,7 +194,7 @@
 }
 
 - (CGFloat)animatorTransitionDimAmount:(SSWAnimator *)animator {
-	return 0.2f;
+	return 0.12f;
 }
 
 @end
