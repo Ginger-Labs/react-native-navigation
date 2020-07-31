@@ -1,5 +1,4 @@
 #import "RNNReactView.h"
-#import <React/RCTRootContentView.h>
 
 @implementation RNNReactView {
     BOOL _isAppeared;
@@ -44,10 +43,6 @@
     }
     
     _isAppeared = NO;
-}
-
-- (void)invalidate {
-    [((RCTRootContentView *)self.contentView) invalidate];
 }
 
 - (NSString *)componentId {

@@ -29,6 +29,4 @@ typedef void (^PreviewCallback)(UIViewController *vc);
 
 - (void)onButtonPress:(RNNUIBarButtonItem *)barButtonItem;
 
-- (void)destroyReactView;
-
 @end

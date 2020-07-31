@@ -4,13 +4,6 @@ const { View, Text, TouchableOpacity } = require('react-native');
 const { Navigation } = require('react-native-navigation');
 const TestIDs = require('../testIDs');
 
-let _overlayInstance;
-const logLifecycleEvent = (event) => {
-  _overlayInstance.setState({
-    events: [..._overlayInstance.state.events, event]
-  });
-}
-
 class StaticLifecycleOverlay extends Component {
   static options() {
     return {
@@ -19,15 +12,6 @@ class StaticLifecycleOverlay extends Component {
       }
     }
   }
-
-  componentDidMount() {
-    _overlayInstance = this;
-  }
-
-  componentWillUnmount() {
-    _overlayInstance = null;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -79,8 +63,6 @@ class StaticLifecycleOverlay extends Component {
       return <Text style={styles.h2}>{`${event.event} | ${event.componentName} | ${event.componentType}`}</Text>;
     } else if (event.buttonId) {
       return <Text style={styles.h2}>{`${event.event} | ${event.buttonId}`}</Text>;
-    } else if (event.text){
-      return <Text style={styles.h2}>{`${event.text}`}</Text>;
     } else {
       return <Text style={styles.h2}>{`${event.event} | ${event.componentId}`}</Text>;
     }
@@ -127,10 +109,7 @@ class StaticLifecycleOverlay extends Component {
     );
   }
 }
-module.exports = {
-  StaticLifecycleOverlay,
-  logLifecycleEvent
-}
+module.exports = StaticLifecycleOverlay;
 
 const styles = {
   root: {

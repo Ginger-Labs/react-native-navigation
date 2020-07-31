@@ -97,19 +97,6 @@
     return nil;
 }
 
-- (void)destroy {
-    [self destroyReactView];
-    [self.presentedViewController destroy];
-    
-    for (UIViewController* child in self.childViewControllers) {
-        [child destroy];
-    }
-}
-
-- (void)destroyReactView {
-    
-}
-
 - (UIViewController *)presentedComponentViewController {
     UIViewController* currentChild = self.getCurrentChild;
     return currentChild ? currentChild.presentedComponentViewController : self;

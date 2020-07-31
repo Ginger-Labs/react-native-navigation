@@ -26,6 +26,4 @@ typedef void (^RNNReactViewReadyCompletionBlock)(void);
 
 - (void)componentDidDisappear;
 
-- (void)invalidate;
-
 @end

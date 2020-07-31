@@ -145,8 +145,8 @@ public class Navigator extends ParentController {
             @Override
             public void onSuccess(String childId) {
                 if (removeSplashView) contentLayout.removeViewAt(0);
-                destroyPreviousRoot();
                 super.onSuccess(childId);
+                destroyPreviousRoot();
             }
         }, reactInstanceManager);
     }
