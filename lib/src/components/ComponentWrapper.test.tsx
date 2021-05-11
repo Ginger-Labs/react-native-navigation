@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import * as renderer from 'react-test-renderer';
+import {ReactTestRendererJSON} from 'react-test-renderer';
 import { ComponentWrapper } from './ComponentWrapper';
 import { Store } from './Store';
 import { mock, verify, instance } from 'ts-mockito';
@@ -68,14 +69,14 @@ describe('ComponentWrapper', () => {
     const NavigationComponent = uut.wrap(componentName, () => MyComponent, store, componentEventsObserver);
     expect(NavigationComponent).not.toBeInstanceOf(MyComponent);
     const tree = renderer.create(<NavigationComponent componentId={'component1'} />);
-    expect(tree.toJSON()!.children).toEqual(['Hello, World!']);
+    expect((tree.toJSON() as ReactTestRendererJSON)!.children).toEqual(['Hello, World!']);
   });
 
   it('injects props from wrapper into original component', () => {
     const renderCount = jest.fn();
     const NavigationComponent = uut.wrap(componentName, () => MyComponent, store, componentEventsObserver);
     const tree = renderer.create(<NavigationComponent componentId={'component1'} text={'yo'} renderCount={renderCount} />);
-    expect(tree.toJSON()!.children).toEqual(['yo']);
+    expect((tree.toJSON() as ReactTestRendererJSON)!.children).toEqual(['yo']);
     expect(renderCount).toHaveBeenCalledTimes(1);
   });
 
@@ -202,7 +203,7 @@ describe('ComponentWrapper', () => {
     it(`wraps the component with a react-redux provider with passed store`, () => {
       const NavigationComponent = uut.wrap(componentName, () => ConnectedComp, store, componentEventsObserver, undefined, ReduxProvider, reduxStore);
       const tree = renderer.create(<NavigationComponent componentId={'theCompId'} />);
-      expect(tree.toJSON()!.children).toEqual(['it just works']);
+      expect(tree.toJSON() as ReactTestRendererJSON[]).toEqual(['it just works']);
       expect((NavigationComponent as any).options()).toEqual({ foo: 123 });
     });
   });
